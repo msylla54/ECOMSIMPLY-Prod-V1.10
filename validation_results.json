@@ -1,0 +1,195 @@
+{
+  "mode": "production",
+  "strict": false,
+  "timestamp": "2025-08-09T01:17:43.161117Z",
+  "summary": {
+    "total": 14,
+    "passed": 10,
+    "failed": 1,
+    "warnings": 3
+  },
+  "details": {
+    "P0_CRITICAL": {
+      "openai": {
+        "service": "OpenAI GPT Content Generation",
+        "status": "passed",
+        "message": "All variables present",
+        "missing_vars": [],
+        "optional_missing": [],
+        "validation_details": {
+          "valid": true,
+          "key_length": 164,
+          "prefix": "sk-***"
+        }
+      },
+      "fal_ai": {
+        "service": "FAL.ai Flux Pro Image Generation",
+        "status": "passed",
+        "message": "All variables present",
+        "missing_vars": [],
+        "optional_missing": [],
+        "validation_details": {
+          "valid": true,
+          "format": "valid"
+        }
+      },
+      "stripe": {
+        "service": "Stripe Payments & Subscriptions",
+        "status": "passed",
+        "message": "Missing optional variables: STRIPE_WEBHOOK_SECRET",
+        "missing_vars": [],
+        "optional_missing": [
+          "STRIPE_WEBHOOK_SECRET"
+        ],
+        "validation_details": {
+          "valid": true,
+          "environment": "test",
+          "recommendation": "Use live keys in production"
+        }
+      },
+      "stripe_frontend": {
+        "service": "Stripe Frontend Publishable Key",
+        "status": "failed",
+        "message": "Missing required variables: REACT_APP_STRIPE_PUBLISHABLE_KEY",
+        "missing_vars": [
+          "REACT_APP_STRIPE_PUBLISHABLE_KEY"
+        ],
+        "optional_missing": [],
+        "validation_details": {
+          "valid": false,
+          "reason": "Key missing"
+        }
+      },
+      "database": {
+        "service": "MongoDB Primary Database",
+        "status": "passed",
+        "message": "All variables present",
+        "missing_vars": [],
+        "optional_missing": [],
+        "validation_details": {
+          "valid": true,
+          "protocol": "standard"
+        }
+      },
+      "security": {
+        "service": "JWT & Encryption Security",
+        "status": "passed",
+        "message": "All variables present",
+        "missing_vars": [],
+        "optional_missing": [],
+        "validation_details": {
+          "valid": true,
+          "issues": []
+        }
+      }
+    },
+    "P1_MAJOR": {
+      "email": {
+        "service": "SMTP Email Service",
+        "status": "passed",
+        "message": "All variables present",
+        "missing_vars": [],
+        "optional_missing": [],
+        "validation_details": {
+          "valid": true,
+          "server": "ecomsimply.com"
+        }
+      },
+      "shopify": {
+        "service": "Shopify Publication API",
+        "status": "warning",
+        "message": "Mock mode enabled - missing real API keys: SHOPIFY_STORE_URL, SHOPIFY_ACCESS_TOKEN",
+        "missing_vars": [],
+        "optional_missing": [],
+        "validation_details": {
+          "valid": false
+        }
+      },
+      "woocommerce": {
+        "service": "WooCommerce Publication API",
+        "status": "warning",
+        "message": "Mock mode enabled - missing real API keys: WOO_STORE_URL, WOO_CONSUMER_KEY, WOO_CONSUMER_SECRET",
+        "missing_vars": [],
+        "optional_missing": [],
+        "validation_details": {
+          "valid": false
+        }
+      },
+      "prestashop": {
+        "service": "PrestaShop Publication API",
+        "status": "warning",
+        "message": "Mock mode enabled - missing real API keys: PRESTA_STORE_URL, PRESTA_API_KEY",
+        "missing_vars": [],
+        "optional_missing": [],
+        "validation_details": {
+          "valid": false
+        }
+      }
+    },
+    "P2_OPTIONAL": {
+      "redis": {
+        "service": "Redis Cache & Sessions",
+        "status": "passed",
+        "message": "Missing optional variables: REDIS_PASSWORD",
+        "missing_vars": [],
+        "optional_missing": [
+          "REDIS_PASSWORD"
+        ],
+        "validation_details": {
+          "valid": true,
+          "configured": true
+        }
+      },
+      "proxy_scraping": {
+        "service": "Proxy Services for Scraping",
+        "status": "passed",
+        "message": "All variables present",
+        "missing_vars": [],
+        "optional_missing": [],
+        "validation_details": {
+          "valid": true,
+          "provider": "none",
+          "configured": false
+        }
+      },
+      "backup": {
+        "service": "AWS S3 External Backups",
+        "status": "passed",
+        "message": "Missing optional variables: BACKUP_S3_BUCKET, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY",
+        "missing_vars": [],
+        "optional_missing": [
+          "BACKUP_S3_BUCKET",
+          "AWS_ACCESS_KEY_ID",
+          "AWS_SECRET_ACCESS_KEY"
+        ],
+        "validation_details": {
+          "valid": true,
+          "configured": false
+        }
+      },
+      "monitoring": {
+        "service": "External Monitoring & Analytics",
+        "status": "passed",
+        "message": "Missing optional variables: MONITORING_ENDPOINT, SENTRY_DSN, DATADOG_API_KEY",
+        "missing_vars": [],
+        "optional_missing": [
+          "MONITORING_ENDPOINT",
+          "SENTRY_DSN",
+          "DATADOG_API_KEY"
+        ],
+        "validation_details": {
+          "valid": true,
+          "services": {
+            "monitoring": false,
+            "sentry": false,
+            "datadog": false
+          }
+        }
+      }
+    }
+  },
+  "missing_critical": [
+    "REACT_APP_STRIPE_PUBLISHABLE_KEY"
+  ],
+  "missing_optional": []
+}

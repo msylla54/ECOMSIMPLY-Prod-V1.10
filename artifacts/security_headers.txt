@@ -1,0 +1,14 @@
+HTTP/2 200 
+accept-ranges: bytes
+access-control-allow-headers: *
+access-control-allow-methods: *
+access-control-allow-origin: *
+content-length: 6244
+content-type: text/html; charset=utf-8
+date: Sat, 16 Aug 2025 00:55:52 GMT
+etag: W/"1864-NUtEAtc6qQXDbAFKoeNeAGTbznI"
+vary: Accept-Encoding
+x-powered-by: Express
+via: 1.1 google
+alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+

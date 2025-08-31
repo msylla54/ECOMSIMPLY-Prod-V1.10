@@ -1,0 +1,12 @@
+{
+  "private": true,
+  "name": "ecomsimply-production",
+  "version": "1.6.0",
+  "description": "ECOMSIMPLY - Production deployment package",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "postinstall": "echo 'Production build - skipping browser dependencies'"
+  }
+}

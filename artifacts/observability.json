@@ -1,0 +1,14 @@
+{
+  "status": "healthy",
+  "services": {
+    "database": "healthy",
+    "scheduler": "healthy"
+  },
+  "system": {
+    "cpu_percent": 12.6,
+    "memory_percent": 38,
+    "disk_usage": 37.5,
+    "uptime": 2204091.836001873,
+    "application_uptime": 1.001945972442627
+  }
+}

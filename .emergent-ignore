@@ -1,0 +1,41 @@
+# ECOMSIMPLY Emergent.sh Deployment Configuration
+# Exclusions pour optimiser le déploiement production
+
+# ===== DÉVELOPPEMENT & TESTS =====
+tests_archive/
+docs_archive/
+*.test.py
+*_test.py
+test_*.py
+__pycache__/
+.pytest_cache/
+.coverage
+coverage.xml
+
+# ===== OUTILS DE DÉVELOPPEMENT =====
+.vscode/
+.idea/
+*.log
+*.patch
+
+# ===== DÉPENDANCES NON-CRITIQUES =====
+playwright
+playwright-*
+chrome
+chromium
+firefox
+
+# ===== FICHIERS TEMPORAIRES =====
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+
+# ===== CONFIGURATIONS LOCALES =====
+.env.local
+.env.development
+.env.staging
+
+# ===== DOCUMENTATION BUILD =====
+docs/build/
+site/

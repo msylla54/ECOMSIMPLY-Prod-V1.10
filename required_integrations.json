@@ -1,0 +1,358 @@
+[
+  {
+    "domain": "ai_content",
+    "provider": "openai",
+    "service": "GPT-4/4-turbo Routing System",
+    "env": ["OPENAI_API_KEY"],
+    "files": [
+      {
+        "path": "backend/services/gpt_content_service.py",
+        "lines": [61, 88, 377]
+      },
+      {
+        "path": "backend/modules/config.py", 
+        "lines": [42, 87]
+      }
+    ],
+    "mode_flag": "OPENAI_AVAILABLE",
+    "required_in_real": true,
+    "healthcheck": "/api/status/ai",
+    "risks": ["Content generation fails", "Fallback templates only", "AI routing broken", "Cost guard ineffective"],
+    "status": {
+      "present": true,
+      "missing": [],
+      "configured": "yes",
+      "tested": "production_ready"
+    },
+    "priority": "P0",
+    "fallback_available": true
+  },
+  {
+    "domain": "image_generation",
+    "provider": "fal_ai",
+    "service": "Flux Pro Image Generation",
+    "env": ["FAL_KEY"],
+    "files": [
+      {
+        "path": "backend/services/image_generation_service.py",
+        "lines": [31, 181, 190]
+      }
+    ],
+    "mode_flag": "FAL_AVAILABLE",
+    "required_in_real": true,
+    "healthcheck": "/api/status/images",
+    "risks": ["Placeholder images only", "Quality degradation", "User experience poor"],
+    "status": {
+      "present": true,
+      "missing": [],
+      "configured": "yes", 
+      "tested": "production_ready"
+    },
+    "priority": "P0",
+    "fallback_available": true
+  },
+  {
+    "domain": "payments", 
+    "provider": "stripe",
+    "service": "Subscription & Checkout System",
+    "env": ["STRIPE_API_KEY", "STRIPE_WEBHOOK_SECRET", "STRIPE_PRICE_ID_PRO", "STRIPE_PRICE_ID_PREMIUM"],
+    "files": [
+      {
+        "path": "backend/services/stripe_service.py",
+        "lines": [17, 18]
+      },
+      {
+        "path": "backend/modules/config.py",
+        "lines": [43, 89]
+      }
+    ],
+    "mode_flag": null,
+    "required_in_real": true,
+    "healthcheck": "/api/status/payments",
+    "risks": ["Payment failures", "Subscription blocked", "Revenue loss", "User registration broken"],
+    "status": {
+      "present": true,
+      "missing": [],
+      "configured": "yes",
+      "tested": "production_ready"
+    },
+    "priority": "P0",
+    "fallback_available": false
+  },
+  {
+    "domain": "payments_frontend",
+    "provider": "stripe",
+    "service": "Client-side Checkout",
+    "env": ["REACT_APP_STRIPE_PUBLISHABLE_KEY"],
+    "files": [
+      {
+        "path": "frontend/.env",
+        "lines": [3]
+      }
+    ],
+    "mode_flag": null,
+    "required_in_real": true,
+    "healthcheck": null,
+    "risks": ["Checkout interface broken", "Payment form errors", "User conversion loss"],
+    "status": {
+      "present": true,
+      "missing": [],
+      "configured": "yes",
+      "tested": "production_ready"
+    },
+    "priority": "P0",
+    "fallback_available": false
+  },
+  {
+    "domain": "ecommerce_publication",
+    "provider": "shopify",
+    "service": "Product Publication API",
+    "env": ["SHOPIFY_STORE_URL", "SHOPIFY_ACCESS_TOKEN"],
+    "files": [
+      {
+        "path": "backend/services/publication_interfaces.py",
+        "lines": [288, 289, 299, 300]
+      },
+      {
+        "path": "backend/services/publication_factory.py",
+        "lines": [36]
+      }
+    ],
+    "mode_flag": "MOCK_MODE",
+    "required_in_real": true,
+    "healthcheck": "/api/status/publication",
+    "risks": ["Mock publications only", "No real product publishing", "Limited testing capability"],
+    "status": {
+      "present": false,
+      "missing": ["SHOPIFY_STORE_URL", "SHOPIFY_ACCESS_TOKEN"],
+      "configured": "mock_only",
+      "tested": "mock_ready"
+    },
+    "priority": "P1",
+    "fallback_available": true
+  },
+  {
+    "domain": "ecommerce_publication",
+    "provider": "woocommerce", 
+    "service": "WooCommerce REST API",
+    "env": ["WOO_STORE_URL", "WOO_CONSUMER_KEY", "WOO_CONSUMER_SECRET"],
+    "files": [
+      {
+        "path": "backend/services/publication_interfaces.py",
+        "lines": [289, 290, 300, 301]
+      }
+    ],
+    "mode_flag": "MOCK_MODE",
+    "required_in_real": true,
+    "healthcheck": "/api/status/publication",
+    "risks": ["Mock publications only", "No WooCommerce integration", "Limited platform coverage"],
+    "status": {
+      "present": false,
+      "missing": ["WOO_STORE_URL", "WOO_CONSUMER_KEY", "WOO_CONSUMER_SECRET"],
+      "configured": "mock_only",
+      "tested": "mock_ready"
+    },
+    "priority": "P1", 
+    "fallback_available": true
+  },
+  {
+    "domain": "ecommerce_publication",
+    "provider": "prestashop",
+    "service": "PrestaShop WebService API", 
+    "env": ["PRESTA_STORE_URL", "PRESTA_API_KEY"],
+    "files": [
+      {
+        "path": "backend/services/publication_interfaces.py",
+        "lines": [290, 301]
+      }
+    ],
+    "mode_flag": "MOCK_MODE",
+    "required_in_real": true,
+    "healthcheck": "/api/status/publication",
+    "risks": ["Mock publications only", "No PrestaShop integration", "European market limited"],
+    "status": {
+      "present": false,
+      "missing": ["PRESTA_STORE_URL", "PRESTA_API_KEY"],
+      "configured": "mock_only", 
+      "tested": "mock_ready"
+    },
+    "priority": "P1",
+    "fallback_available": true
+  },
+  {
+    "domain": "email",
+    "provider": "smtp",
+    "service": "O2Switch SMTP Service",
+    "env": ["SMTP_SERVER", "SMTP_PORT", "SMTP_USERNAME", "SMTP_PASSWORD", "SMTP_USE_SSL", "SENDER_EMAIL"],
+    "files": [
+      {
+        "path": "backend/modules/email_service.py",
+        "lines": [21, 22, 23, 24, 25, 26]
+      },
+      {
+        "path": "backend/modules/config.py",
+        "lines": [64, 65, 66, 67]
+      }
+    ],
+    "mode_flag": null,
+    "required_in_real": true,
+    "healthcheck": "/api/status/email",
+    "risks": ["No notifications", "Trial reminders lost", "User communication broken"],
+    "status": {
+      "present": true,
+      "missing": [],
+      "configured": "yes",
+      "tested": "production_ready"
+    },
+    "priority": "P1",
+    "fallback_available": false
+  },
+  {
+    "domain": "scraping_proxy",
+    "provider": "proxy_services",
+    "service": "Proxy Rotation for Scraping",
+    "env": ["PROXY_PROVIDER", "SCRAPERAPI_KEY", "BRIGHT_DATA_KEY", "CAPTCHA_SOLVER_KEY"],
+    "files": [
+      {
+        "path": "backend/services/proxy_providers.py",
+        "lines": [54, 250]
+      },
+      {
+        "path": "backend/services/enhanced_scraping_service.py",
+        "lines": [15]
+      }
+    ],
+    "mode_flag": "MOCK_MODE",
+    "required_in_real": false,
+    "healthcheck": "/api/status/scraping",
+    "risks": ["Limited scraping data", "Mock competitor prices only", "SEO analysis reduced"],
+    "status": {
+      "present": false,
+      "missing": ["PROXY_PROVIDER", "SCRAPERAPI_KEY", "BRIGHT_DATA_KEY"],
+      "configured": "mock_only",
+      "tested": "mock_ready"
+    },
+    "priority": "P2",
+    "fallback_available": true
+  },
+  {
+    "domain": "database",
+    "provider": "mongodb",
+    "service": "Primary Database",
+    "env": ["MONGO_URL", "DB_NAME"],
+    "files": [
+      {
+        "path": "backend/modules/config.py",
+        "lines": [25, 26]
+      }
+    ],
+    "mode_flag": null,
+    "required_in_real": true,
+    "healthcheck": "integrated",
+    "risks": ["Complete service failure", "Data loss catastrophic", "User data inaccessible"],
+    "status": {
+      "present": true,
+      "missing": [],
+      "configured": "yes",
+      "tested": "production_ready"
+    },
+    "priority": "P0",
+    "fallback_available": false
+  },
+  {
+    "domain": "security",
+    "provider": "internal",
+    "service": "JWT & Encryption",
+    "env": ["JWT_SECRET", "ENCRYPTION_KEY"],
+    "files": [
+      {
+        "path": "backend/modules/config.py",
+        "lines": [29, 35]
+      }
+    ],
+    "mode_flag": null,
+    "required_in_real": true,
+    "healthcheck": "integrated",
+    "risks": ["Authentication compromise", "Data encryption failure", "Security breach"],
+    "status": {
+      "present": true,
+      "missing": [],
+      "configured": "yes",
+      "tested": "production_ready"
+    },
+    "priority": "P0",
+    "fallback_available": false
+  },
+  {
+    "domain": "cache",
+    "provider": "redis",
+    "service": "Session & Performance Cache",
+    "env": ["REDIS_URL"],
+    "files": [
+      {
+        "path": "backend/modules/config.py",
+        "lines": [52]
+      }
+    ],
+    "mode_flag": null,
+    "required_in_real": false,
+    "healthcheck": "/api/status/redis",
+    "risks": ["Performance degradation", "No session caching", "Slower response times"],
+    "status": {
+      "present": false,
+      "missing": ["REDIS_URL"],
+      "configured": "optional",
+      "tested": "not_implemented"
+    },
+    "priority": "P2",
+    "fallback_available": true
+  },
+  {
+    "domain": "backup",
+    "provider": "aws_s3",
+    "service": "External Backup Storage",
+    "env": ["BACKUP_S3_BUCKET", "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY"],
+    "files": [
+      {
+        "path": "scripts/backup.sh",
+        "lines": [1]
+      }
+    ],
+    "mode_flag": "BACKUP_ENABLED",
+    "required_in_real": false,
+    "healthcheck": "/api/status/backup",
+    "risks": ["No external backups", "Data recovery limited", "Disaster recovery missing"],
+    "status": {
+      "present": false,
+      "missing": ["BACKUP_S3_BUCKET", "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY"],
+      "configured": "not_configured",
+      "tested": "not_implemented"
+    },
+    "priority": "P2",
+    "fallback_available": false
+  },
+  {
+    "domain": "monitoring",
+    "provider": "external",
+    "service": "Application Monitoring",
+    "env": ["MONITORING_ENDPOINT", "SENTRY_DSN", "DATADOG_API_KEY"],
+    "files": [
+      {
+        "path": "backend/modules/config.py",
+        "lines": [70]
+      }
+    ],
+    "mode_flag": null,
+    "required_in_real": false,
+    "healthcheck": "/api/status/monitoring",
+    "risks": ["No error tracking", "Performance blind spots", "No alerting system"],
+    "status": {
+      "present": false,
+      "missing": ["MONITORING_ENDPOINT", "SENTRY_DSN", "DATADOG_API_KEY"],
+      "configured": "not_configured",
+      "tested": "not_implemented"
+    },
+    "priority": "P2",
+    "fallback_available": false
+  }
+]

@@ -1,0 +1,273 @@
+{
+  "test_summary": {
+    "total_tests": 7,
+    "passed_tests": 6,
+    "failed_tests": 1,
+    "warning_tests": 0,
+    "success_rate": 85.71428571428571,
+    "global_status": "NEEDS_MINOR_FIXES"
+  },
+  "emergent_deployment_readiness": {
+    "health_endpoint_ready": true,
+    "cors_configured": false,
+    "scheduler_production_ready": true,
+    "environment_validated": true,
+    "deployment_recommendation": "NEEDS_MINOR_FIXES"
+  },
+  "detailed_results": {
+    "health_endpoint": {
+      "status": "passed",
+      "details": {
+        "response_status": 200,
+        "response_time_ms": 8.267879486083984,
+        "health_data": {
+          "status": "ok",
+          "service": "ecomsimply-api",
+          "timestamp": "2025-08-30T16:40:25.338574",
+          "version": "1.0.0",
+          "mongo": "ok",
+          "database": "ecomsimply_dev",
+          "response_time_ms": 0.96
+        },
+        "required_fields_present": true,
+        "optional_fields_present": [
+          "mongo",
+          "version",
+          "database"
+        ],
+        "format_valid": true
+      }
+    },
+    "cors_configuration": {
+      "status": "failed",
+      "details": {
+        "error": "name 'origins_result' is not defined"
+      }
+    },
+    "helper_functions": {
+      "status": "passed",
+      "details": {
+        "total_tests": 16,
+        "passed_tests": 16,
+        "all_test_cases": [
+          {
+            "input": "true",
+            "expected": true,
+            "actual": true,
+            "passed": true
+          },
+          {
+            "input": "True",
+            "expected": true,
+            "actual": true,
+            "passed": true
+          },
+          {
+            "input": "TRUE",
+            "expected": true,
+            "actual": true,
+            "passed": true
+          },
+          {
+            "input": "1",
+            "expected": true,
+            "actual": true,
+            "passed": true
+          },
+          {
+            "input": "yes",
+            "expected": true,
+            "actual": true,
+            "passed": true
+          },
+          {
+            "input": "on",
+            "expected": true,
+            "actual": true,
+            "passed": true
+          },
+          {
+            "input": "enabled",
+            "expected": true,
+            "actual": true,
+            "passed": true
+          },
+          {
+            "input": "false",
+            "expected": false,
+            "actual": false,
+            "passed": true
+          },
+          {
+            "input": "False",
+            "expected": false,
+            "actual": false,
+            "passed": true
+          },
+          {
+            "input": "0",
+            "expected": false,
+            "actual": false,
+            "passed": true
+          },
+          {
+            "input": "no",
+            "expected": false,
+            "actual": false,
+            "passed": true
+          },
+          {
+            "input": "off",
+            "expected": false,
+            "actual": false,
+            "passed": true
+          },
+          {
+            "input": "disabled",
+            "expected": false,
+            "actual": false,
+            "passed": true
+          },
+          {
+            "input": "",
+            "expected": false,
+            "actual": false,
+            "passed": true
+          },
+          {
+            "input": null,
+            "expected": false,
+            "actual": false,
+            "passed": true
+          },
+          {
+            "input": "random",
+            "expected": false,
+            "actual": false,
+            "passed": true
+          }
+        ]
+      }
+    },
+    "environment_variables": {
+      "status": "passed",
+      "details": {
+        "all_variables": {
+          "PORT": {
+            "current_value": null,
+            "is_set": false,
+            "required": false,
+            "default": "8001",
+            "type": "int",
+            "status": "passed"
+          },
+          "WORKERS": {
+            "current_value": null,
+            "is_set": false,
+            "required": false,
+            "default": "1",
+            "type": "int",
+            "status": "passed"
+          },
+          "ENABLE_SCHEDULER": {
+            "current_value": null,
+            "is_set": false,
+            "required": false,
+            "default": "false",
+            "type": "bool",
+            "status": "passed"
+          },
+          "APP_BASE_URL": {
+            "current_value": null,
+            "is_set": false,
+            "required": false,
+            "default": null,
+            "type": "str",
+            "status": "passed"
+          },
+          "MONGO_URL": {
+            "current_value": "mongodb://localhost:27017/ecomsimply_dev",
+            "is_set": true,
+            "required": true,
+            "default": null,
+            "type": "str",
+            "status": "passed"
+          },
+          "JWT_SECRET": {
+            "current_value": "your-super-secret-jwt-key-PLACEHOLDER",
+            "is_set": true,
+            "required": true,
+            "default": null,
+            "type": "str",
+            "status": "passed"
+          }
+        },
+        "env_file_found": true,
+        "total_vars_checked": 6
+      }
+    },
+    "imports_startup": {
+      "status": "passed",
+      "details": {
+        "all_imports_found": true,
+        "server_file_size": 34520,
+        "critical_functions_detected": 6
+      }
+    },
+    "scheduler_logs": {
+      "status": "passed",
+      "details": {
+        "total_tests": 2,
+        "all_results": [
+          {
+            "env_value": "false",
+            "expected_status": "disabled",
+            "actual_status": "disabled",
+            "passed": true,
+            "full_output": "SCHEDULER_LOG:disabled\n"
+          },
+          {
+            "env_value": "true",
+            "expected_status": "enabled",
+            "actual_status": "enabled",
+            "passed": true,
+            "full_output": "SCHEDULER_LOG:enabled\n"
+          }
+        ],
+        "default_behavior": "disabled (production ready)"
+      }
+    },
+    "production_readiness": {
+      "status": "passed",
+      "details": {
+        "readiness_score": 91.66666666666666,
+        "readiness_level": "EXCELLENT",
+        "passed_checks": 11,
+        "total_checks": 12,
+        "basic_checks": {
+          "health_endpoint_format": true,
+          "cors_security": false,
+          "helper_functions": true,
+          "environment_config": true,
+          "scheduler_default_disabled": true,
+          "imports_complete": true
+        },
+        "emergent_specific_checks": {
+          "scheduler_production_default": true,
+          "health_has_status": true,
+          "health_has_service": true,
+          "health_has_timestamp": true,
+          "health_has_response_time": true,
+          "health_response_fast": true
+        },
+        "deployment_ready": true
+      }
+    }
+  },
+  "timestamp": "2025-08-30T16:40:25.433446",
+  "test_environment": {
+    "backend_directory": "/app/ECOMSIMPLY-Prod-V1.6/backend",
+    "server_file": "/app/ECOMSIMPLY-Prod-V1.6/backend/server.py",
+    "test_url": "http://localhost:8001"
+  }
+}

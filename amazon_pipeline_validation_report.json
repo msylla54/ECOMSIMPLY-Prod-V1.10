@@ -1,0 +1,79 @@
+{
+  "validation_date": "2025-08-20T02:08:00.571454",
+  "focus": "iPhone 15 Pro Workflow + Amazon SP-API A9/A10",
+  "backend_url": "https://ecomsimply.com/api",
+  "total_tests": 11,
+  "passed_tests": 0,
+  "success_rate": "0.0%",
+  "duration_seconds": 0.3074836730957031,
+  "critical_criteria_passed": "0/5",
+  "conformity_status": "CONFORMITÉ INSUFFISANTE",
+  "detailed_results": [
+    {
+      "test": "Health endpoint /health",
+      "status": "FAIL",
+      "details": "Status: 502",
+      "timestamp": "2025-08-20T02:08:00.334913"
+    },
+    {
+      "test": "Health endpoint /health/ready",
+      "status": "FAIL",
+      "details": "Status: 502",
+      "timestamp": "2025-08-20T02:08:00.378997"
+    },
+    {
+      "test": "Health endpoint /health/live",
+      "status": "FAIL",
+      "details": "Status: 502",
+      "timestamp": "2025-08-20T02:08:00.394576"
+    },
+    {
+      "test": "Health endpoint /status/publication",
+      "status": "FAIL",
+      "details": "Status: 502",
+      "timestamp": "2025-08-20T02:08:00.413361"
+    },
+    {
+      "test": "SEO A9/A10 - Génération",
+      "status": "FAIL",
+      "details": "Status: 502",
+      "timestamp": "2025-08-20T02:08:00.447372"
+    },
+    {
+      "test": "Prix iPhone 15 Pro - Scraping",
+      "status": "FAIL",
+      "details": "Status: 502",
+      "timestamp": "2025-08-20T02:08:00.473439"
+    },
+    {
+      "test": "Pipeline - Génération",
+      "status": "FAIL",
+      "details": "Status: 502",
+      "timestamp": "2025-08-20T02:08:00.489076"
+    },
+    {
+      "test": "Amazon SP-API - Validation",
+      "status": "FAIL",
+      "details": "Status: 502",
+      "timestamp": "2025-08-20T02:08:00.505493"
+    },
+    {
+      "test": "Monitoring - /stats/public",
+      "status": "FAIL",
+      "details": "Status: 502",
+      "timestamp": "2025-08-20T02:08:00.521908"
+    },
+    {
+      "test": "Monitoring - /testimonials",
+      "status": "FAIL",
+      "details": "Status: 502",
+      "timestamp": "2025-08-20T02:08:00.550945"
+    },
+    {
+      "test": "Monitoring - /public/plans-pricing",
+      "status": "FAIL",
+      "details": "Status: 502",
+      "timestamp": "2025-08-20T02:08:00.571221"
+    }
+  ]
+}

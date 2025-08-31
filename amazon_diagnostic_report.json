@@ -1,0 +1,369 @@
+{
+  "metadata": {
+    "test_timestamp": "2025-08-23T19:27:46.023529",
+    "backend_url": "https://ecomsimply-deploy.preview.emergentagent.com",
+    "tester_version": "1.0.0"
+  },
+  "results": {
+    "core_endpoints": {
+      "/amazon/connect": {
+        "status": "auth_required",
+        "http_status": 403,
+        "description": "Amazon Connection Creation",
+        "message": "Authentication required (normal behavior)"
+      },
+      "/amazon/status": {
+        "status": "auth_required",
+        "http_status": 403,
+        "description": "Amazon Connection Status",
+        "message": "Authentication required (normal behavior)"
+      },
+      "/amazon/callback": {
+        "status": "unknown",
+        "http_status": 422,
+        "description": "Amazon OAuth Callback",
+        "message": "Unexpected status code: 422"
+      },
+      "/amazon/marketplaces": {
+        "status": "functional",
+        "http_status": 200,
+        "description": "Amazon Marketplaces List",
+        "data_present": true,
+        "response_type": "dict"
+      },
+      "/amazon/disconnect": {
+        "status": "auth_required",
+        "http_status": 403,
+        "description": "Amazon Disconnect",
+        "message": "Authentication required (normal behavior)"
+      },
+      "/amazon/health": {
+        "status": "functional",
+        "http_status": 200,
+        "description": "Amazon Health Check",
+        "data_present": true,
+        "response_type": "dict"
+      },
+      "/amazon/health/phase3": {
+        "status": "not_implemented",
+        "http_status": 404,
+        "description": "Amazon Phase 3 Health",
+        "message": "Endpoint not found"
+      },
+      "/amazon/connections": {
+        "status": "auth_required",
+        "http_status": 403,
+        "description": "Amazon Connections List",
+        "message": "Authentication required (normal behavior)"
+      }
+    },
+    "phase_endpoints": {
+      "phase1": {
+        "/amazon/connect": {
+          "status": "auth_required",
+          "http_status": 403,
+          "description": "Phase 1 - Connect",
+          "message": "Authentication required (normal behavior)"
+        },
+        "/amazon/status": {
+          "status": "auth_required",
+          "http_status": 403,
+          "description": "Phase 1 - Status",
+          "message": "Authentication required (normal behavior)"
+        },
+        "/amazon/marketplaces": {
+          "status": "functional",
+          "http_status": 200,
+          "description": "Phase 1 - Marketplaces",
+          "data_present": true,
+          "response_type": "dict"
+        },
+        "/amazon/disconnect": {
+          "status": "auth_required",
+          "http_status": 403,
+          "description": "Phase 1 - Disconnect",
+          "message": "Authentication required (normal behavior)"
+        }
+      },
+      "phase2": {
+        "/amazon/listings/generate": {
+          "status": "auth_required",
+          "http_status": 403,
+          "description": "Phase 2 - Generate Listing",
+          "message": "Authentication required (normal behavior)"
+        },
+        "/amazon/listings/validate": {
+          "status": "auth_required",
+          "http_status": 403,
+          "description": "Phase 2 - Validate Listing",
+          "message": "Authentication required (normal behavior)"
+        },
+        "/amazon/listings/publish": {
+          "status": "auth_required",
+          "http_status": 403,
+          "description": "Phase 2 - Publish Listing",
+          "message": "Authentication required (normal behavior)"
+        },
+        "/amazon/listings/status/TEST-SKU": {
+          "status": "auth_required",
+          "http_status": 403,
+          "description": "Phase 2 - Listing Status",
+          "message": "Authentication required (normal behavior)"
+        },
+        "/amazon/listings/history": {
+          "status": "auth_required",
+          "http_status": 403,
+          "description": "Phase 2 - Listings History",
+          "message": "Authentication required (normal behavior)"
+        },
+        "/amazon/listings/update/TEST-SKU": {
+          "status": "auth_required",
+          "http_status": 403,
+          "description": "Phase 2 - Update Listing",
+          "message": "Authentication required (normal behavior)"
+        }
+      },
+      "phase3": {
+        "/amazon/scraping/B08N5WRWNW": {
+          "status": "not_implemented",
+          "http_status": 404,
+          "description": "Phase 3 - Scrape Product",
+          "message": "Endpoint not found"
+        },
+        "/amazon/scraping/competitors/iPhone 12": {
+          "status": "not_implemented",
+          "http_status": 404,
+          "description": "Phase 3 - Scrape Competitors",
+          "message": "Endpoint not found"
+        },
+        "/amazon/seo/optimize": {
+          "status": "not_implemented",
+          "http_status": 404,
+          "description": "Phase 3 - SEO Optimize",
+          "message": "Endpoint not found"
+        },
+        "/amazon/seo/variants": {
+          "status": "not_implemented",
+          "http_status": 404,
+          "description": "Phase 3 - SEO Variants",
+          "message": "Endpoint not found"
+        },
+        "/amazon/price/optimize": {
+          "status": "not_implemented",
+          "http_status": 404,
+          "description": "Phase 3 - Price Optimize",
+          "message": "Endpoint not found"
+        },
+        "/amazon/price/validate": {
+          "status": "not_implemented",
+          "http_status": 404,
+          "description": "Phase 3 - Price Validate",
+          "message": "Endpoint not found"
+        },
+        "/amazon/publish": {
+          "status": "not_implemented",
+          "http_status": 404,
+          "description": "Phase 3 - Publish Updates",
+          "message": "Endpoint not found"
+        },
+        "/amazon/monitoring": {
+          "status": "not_implemented",
+          "http_status": 404,
+          "description": "Phase 3 - Monitoring",
+          "message": "Endpoint not found"
+        }
+      },
+      "phase4": {
+        "/amazon/pricing/rules": {
+          "status": "not_implemented",
+          "http_status": 404,
+          "description": "Phase 4 - Create Pricing Rule",
+          "message": "Endpoint not found"
+        },
+        "/amazon/pricing/analysis": {
+          "status": "not_implemented",
+          "http_status": 404,
+          "description": "Phase 4 - Price Analysis",
+          "message": "Endpoint not found"
+        }
+      },
+      "phase5": {
+        "/amazon/monitoring/jobs": {
+          "status": "not_implemented",
+          "http_status": 404,
+          "description": "Phase 5 - Create Monitoring Job",
+          "message": "Endpoint not found"
+        },
+        "/amazon/monitoring/kpis": {
+          "status": "not_implemented",
+          "http_status": 404,
+          "description": "Phase 5 - Monitoring KPIs",
+          "message": "Endpoint not found"
+        },
+        "/amazon/monitoring/dashboard": {
+          "status": "not_implemented",
+          "http_status": 404,
+          "description": "Phase 5 - Monitoring Dashboard",
+          "message": "Endpoint not found"
+        },
+        "/amazon/monitoring/alerts": {
+          "status": "not_implemented",
+          "http_status": 404,
+          "description": "Phase 5 - Monitoring Alerts",
+          "message": "Endpoint not found"
+        }
+      },
+      "phase6": {
+        "/amazon/phase6/advanced": {
+          "status": "not_implemented",
+          "http_status": 404,
+          "description": "Phase 6 - Advanced Features",
+          "message": "Endpoint not found"
+        },
+        "/amazon/phase6/bulk-operations": {
+          "status": "not_implemented",
+          "http_status": 404,
+          "description": "Phase 6 - Bulk Operations",
+          "message": "Endpoint not found"
+        },
+        "/amazon/phase6/analytics": {
+          "status": "not_implemented",
+          "http_status": 404,
+          "description": "Phase 6 - Advanced Analytics",
+          "message": "Endpoint not found"
+        }
+      }
+    },
+    "workflows": {
+      "oauth": {
+        "/amazon/connect?marketplace_id=A13V1IB3VIYZZH": {
+          "status": "auth_required",
+          "http_status": 403,
+          "description": "OAuth - Get Authorization URL",
+          "message": "Authentication required (normal behavior)"
+        },
+        "/amazon/status": {
+          "status": "auth_required",
+          "http_status": 403,
+          "description": "OAuth - Check Connection Status",
+          "message": "Authentication required (normal behavior)"
+        }
+      },
+      "upload": {
+        "/amazon/listings/generate": {
+          "status": "auth_required",
+          "http_status": 403,
+          "description": "Upload - Generate Listing",
+          "message": "Authentication required (normal behavior)"
+        },
+        "/amazon/listings/validate": {
+          "status": "auth_required",
+          "http_status": 403,
+          "description": "Upload - Validate Listing",
+          "message": "Authentication required (normal behavior)"
+        },
+        "/amazon/listings/publish": {
+          "status": "auth_required",
+          "http_status": 403,
+          "description": "Upload - Publish to Amazon",
+          "message": "Authentication required (normal behavior)"
+        }
+      },
+      "monitoring": {
+        "/amazon/monitoring": {
+          "status": "not_implemented",
+          "http_status": 404,
+          "description": "Monitoring - Get Status",
+          "message": "Endpoint not found"
+        },
+        "/amazon/monitoring/jobs": {
+          "status": "not_implemented",
+          "http_status": 404,
+          "description": "Monitoring - Get Jobs",
+          "message": "Endpoint not found"
+        },
+        "/amazon/monitoring/kpis": {
+          "status": "not_implemented",
+          "http_status": 404,
+          "description": "Monitoring - Get KPIs",
+          "message": "Endpoint not found"
+        }
+      },
+      "publication": {
+        "/amazon/seo/optimize": {
+          "status": "not_implemented",
+          "http_status": 404,
+          "description": "Publication - SEO Optimize",
+          "message": "Endpoint not found"
+        },
+        "/amazon/price/optimize": {
+          "status": "not_implemented",
+          "http_status": 404,
+          "description": "Publication - Price Optimize",
+          "message": "Endpoint not found"
+        },
+        "/amazon/publish": {
+          "status": "not_implemented",
+          "http_status": 404,
+          "description": "Publication - Publish Updates",
+          "message": "Endpoint not found"
+        }
+      }
+    },
+    "integrations": {
+      "lwa": {
+        "/amazon/connect": {
+          "status": "auth_required",
+          "http_status": 403,
+          "description": "LWA - OAuth URL Generation",
+          "message": "Authentication required (normal behavior)"
+        }
+      },
+      "aws_sts": {
+        "/amazon/health": {
+          "status": "functional",
+          "http_status": 200,
+          "description": "AWS STS - Health Check",
+          "data_present": true,
+          "response_type": "dict"
+        }
+      },
+      "spapi": {
+        "/amazon/marketplaces": {
+          "status": "functional",
+          "http_status": 200,
+          "description": "SP-API - Marketplaces",
+          "data_present": true,
+          "response_type": "dict"
+        },
+        "/amazon/listings/history": {
+          "status": "auth_required",
+          "http_status": 403,
+          "description": "SP-API - Listings History",
+          "message": "Authentication required (normal behavior)"
+        }
+      },
+      "mongodb": {
+        "/amazon/status": {
+          "status": "auth_required",
+          "http_status": 403,
+          "description": "MongoDB - Connection Status",
+          "message": "Authentication required (normal behavior)"
+        },
+        "/amazon/connections": {
+          "status": "auth_required",
+          "http_status": 403,
+          "description": "MongoDB - Connections Collection",
+          "message": "Authentication required (normal behavior)"
+        }
+      }
+    },
+    "summary": {
+      "total_tested": 55,
+      "functional": 5,
+      "auth_required": 23,
+      "broken": 0,
+      "not_implemented": 26
+    }
+  }
+}

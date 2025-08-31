@@ -1,0 +1,126 @@
+{
+  "timestamp": "2025-08-20T15:38:29.374347",
+  "duration_seconds": 3.981238842010498,
+  "backend_url": "https://ecomsimply.com",
+  "test_product": {
+    "brand": "Apple",
+    "product_name": "iPhone 15 Pro Max 256GB",
+    "features": [
+      "Puce A17 Pro avec GPU 6 cœurs",
+      "Écran Super Retina XDR 6,7 pouces",
+      "Système caméra Pro triple 48 Mpx",
+      "Châssis titane qualité aérospatiale",
+      "USB-C avec USB 3 transferts rapides"
+    ],
+    "category": "électronique",
+    "target_keywords": [
+      "smartphone",
+      "premium",
+      "apple",
+      "iphone",
+      "pro",
+      "titanium"
+    ],
+    "size": "6,7 pouces",
+    "color": "Titane Naturel",
+    "price": 1479.0,
+    "description": "Le smartphone le plus avancé d'Apple avec puce A17 Pro et design titane premium"
+  },
+  "endpoint_results": {
+    "generate": {
+      "tested": true,
+      "success": false,
+      "details": {
+        "error": "No Amazon connection"
+      }
+    },
+    "validate": {
+      "tested": true,
+      "success": false,
+      "details": {
+        "error": "No Amazon connection"
+      }
+    },
+    "publish": {
+      "tested": true,
+      "success": false,
+      "details": {
+        "error": "No Amazon connection"
+      }
+    },
+    "status": {
+      "tested": true,
+      "success": false,
+      "details": {
+        "error": "No Amazon connection"
+      }
+    },
+    "history": {
+      "tested": true,
+      "success": true,
+      "details": {
+        "total_count": 0,
+        "retrieved_count": 0,
+        "has_listings": false
+      }
+    },
+    "update": {
+      "tested": true,
+      "success": false,
+      "details": {
+        "error": "No Amazon connection"
+      }
+    }
+  },
+  "successful_endpoints": 1,
+  "total_endpoints": 6,
+  "success_rate": 16.666666666666664,
+  "generated_listing": {
+    "listing_id": "test_validation_123",
+    "product_data": {
+      "brand": "Apple",
+      "product_name": "iPhone 15 Pro Max 256GB",
+      "features": [
+        "Puce A17 Pro avec GPU 6 cœurs",
+        "Écran Super Retina XDR 6,7 pouces",
+        "Système caméra Pro triple 48 Mpx",
+        "Châssis titane qualité aérospatiale",
+        "USB-C avec USB 3 transferts rapides"
+      ],
+      "category": "électronique",
+      "target_keywords": [
+        "smartphone",
+        "premium",
+        "apple",
+        "iphone",
+        "pro",
+        "titanium"
+      ],
+      "size": "6,7 pouces",
+      "color": "Titane Naturel",
+      "price": 1479.0,
+      "description": "Le smartphone le plus avancé d'Apple avec puce A17 Pro et design titane premium"
+    },
+    "seo_content": {
+      "title": "Apple iPhone 15 Pro Max 256GB Titane Naturel - Smartphone Premium",
+      "bullet_points": [
+        "✅ PERFORMANCE SUPÉRIEURE : Puce A17 Pro pour des performances exceptionnelles",
+        "🎯 DESIGN TITANIUM : Construction premium en titanium naturel résistant",
+        "📸 SYSTÈME CAMÉRAS PRO : Triple caméra 48MP avec zoom optique 5x",
+        "⚡ BATTERIE LONGUE DURÉE : Jusqu'à 29h de lecture vidéo en continu",
+        "🔒 SÉCURITÉ AVANCÉE : Face ID et chiffrement avancé pour vos données"
+      ],
+      "description": "<h3>🌟 Apple iPhone 15 Pro Max</h3><p>Découvrez notre <strong>iPhone 15 Pro Max</strong> conçu pour répondre à tous vos besoins en matière de <em>électronique</em>. Apple vous garantit une qualité exceptionnelle et une performance optimale.</p><h4>✨ Caractéristiques principales :</h4><ul><li><strong>Puce A17 Pro avec GPU 6 cœurs</strong> - Pour une expérience utilisateur optimale</li><li><strong>Écran Super Retina XDR 6,7 pouces</strong> - Pour une expérience utilisateur optimale</li></ul>",
+      "backend_keywords": "apple, iphone, smartphone, premium, titanium, pro, 15, max, puce, a17",
+      "image_requirements": {
+        "main_image": {
+          "description": "Image principale iPhone 15 Pro Max sur fond blanc",
+          "min_resolution": "1000x1000",
+          "required": true
+        },
+        "total_count": 5
+      }
+    }
+  },
+  "validation_result": null
+}

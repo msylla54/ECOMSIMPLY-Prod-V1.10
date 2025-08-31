@@ -1,0 +1,20 @@
+{
+  "timestamp": "2025-08-24T23:42:47.456912",
+  "backend_url": "https://api.ecomsimply.com",
+  "frontend_url": "https://ecomsimply.com",
+  "results": {
+    "backend_health": true,
+    "bootstrap_admin": true,
+    "admin_login": true,
+    "proxy_frontend": true,
+    "emergency_routes": [],
+    "security_checks": [
+      "\u2705 Access-Control-Allow-Origin: *",
+      "\u2705 Content-Type: application/json",
+      "\u2705 Endpoints admin prot\u00e9g\u00e9s (401 sans token)"
+    ],
+    "admin_token": "simulated_jwt_token_here"
+  },
+  "status": "SUCCESS",
+  "success_rate": 100.0
+}

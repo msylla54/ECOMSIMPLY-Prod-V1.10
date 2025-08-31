@@ -1,0 +1,16 @@
+{
+  "status": "healthy",
+  "timestamp": "2025-08-16T00:56:23.949006",
+  "version": "1.0.0",
+  "services": {
+    "database": "healthy",
+    "scheduler": "healthy"
+  },
+  "system": {
+    "cpu_percent": 12.9,
+    "memory_percent": 37.4,
+    "disk_usage": 37.3,
+    "uptime": 2204023.9489560127,
+    "application_uptime": 1.0020949840545654
+  }
+}

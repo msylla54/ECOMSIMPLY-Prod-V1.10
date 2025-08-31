@@ -1,0 +1,116 @@
+{
+  "total_tests": 9,
+  "passed_tests": 9,
+  "failed_tests": 0,
+  "success_rate": 100.0,
+  "test_results": [
+    {
+      "test": "Amazon Health Endpoint",
+      "success": true,
+      "details": "Service Amazon identifié: Amazon SP-API Integration",
+      "timestamp": "2025-08-18T05:18:41.484045",
+      "data": {
+        "status": "degraded",
+        "service": "Amazon SP-API Integration",
+        "version": "1.0.0",
+        "details": {
+          "total_connections": 26,
+          "status_breakdown": {
+            "pending": 2,
+            "revoked": 24
+          },
+          "kms_access": false,
+          "timestamp": "2025-08-18T05:18:41.478269"
+        }
+      }
+    },
+    {
+      "test": "Amazon Disconnect Authentication Required",
+      "success": true,
+      "details": "Authentification correctement requise (status: 403)",
+      "timestamp": "2025-08-18T05:18:41.505161",
+      "data": {}
+    },
+    {
+      "test": "Multi-tenant Security",
+      "success": true,
+      "details": "Sécurité multi-tenant validée: authentification JWT requise",
+      "timestamp": "2025-08-18T05:18:41.505602",
+      "data": {}
+    },
+    {
+      "test": "Authentication",
+      "success": true,
+      "details": "Authentifié avec succès pour msylla54@gmail.com",
+      "timestamp": "2025-08-18T05:18:41.749662",
+      "data": {
+        "token_length": 171
+      }
+    },
+    {
+      "test": "Amazon Status Endpoint Structure",
+      "success": true,
+      "details": "Endpoint fonctionnel avec statut 'revoked'",
+      "timestamp": "2025-08-18T05:18:43.807061",
+      "data": {
+        "status": "revoked",
+        "message": "Connexions Amazon expirées ou révoquées",
+        "connections_count": 24
+      }
+    },
+    {
+      "test": "Amazon Disconnect Endpoint",
+      "success": true,
+      "details": "Déconnexion réussie: 0 connexion(s) déconnectée(s)",
+      "timestamp": "2025-08-18T05:18:45.904648",
+      "data": {
+        "status": "revoked",
+        "message": "0 connexion(s) Amazon déconnectée(s) avec succès",
+        "disconnected_count": 0,
+        "total_connections": 24
+      }
+    },
+    {
+      "test": "Amazon Status Endpoint Structure",
+      "success": true,
+      "details": "Endpoint fonctionnel avec statut 'revoked'",
+      "timestamp": "2025-08-18T05:18:48.962640",
+      "data": {
+        "status": "revoked",
+        "message": "Connexions Amazon expirées ou révoquées",
+        "connections_count": 24
+      }
+    },
+    {
+      "test": "Status Change After Disconnect",
+      "success": true,
+      "details": "Statut maintenu à 'revoked' (aucune connexion active à déconnecter)",
+      "timestamp": "2025-08-18T05:18:48.962718",
+      "data": {
+        "initial": {
+          "status": "revoked",
+          "message": "Connexions Amazon expirées ou révoquées",
+          "connections_count": 24
+        },
+        "new": {
+          "status": "revoked",
+          "message": "Connexions Amazon expirées ou révoquées",
+          "connections_count": 24
+        }
+      }
+    },
+    {
+      "test": "Amazon Disconnect Endpoint",
+      "success": true,
+      "details": "Déconnexion réussie: 0 connexion(s) déconnectée(s)",
+      "timestamp": "2025-08-18T05:18:51.059321",
+      "data": {
+        "status": "revoked",
+        "message": "0 connexion(s) Amazon déconnectée(s) avec succès",
+        "disconnected_count": 0,
+        "total_connections": 24
+      }
+    }
+  ],
+  "timestamp": "2025-08-18T05:18:51.059404"
+}

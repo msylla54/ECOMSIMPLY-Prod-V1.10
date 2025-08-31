@@ -1,0 +1,165 @@
+{
+  "test_name": "Transport Layer Robuste ECOMSIMPLY",
+  "timestamp": 1755251588.1119595,
+  "tests": {
+    "RequestCoordinator Initialization": {
+      "success": true,
+      "details": "Configuration correcte: max_per_host=3, timeout=10s, cache_ttl=180s, retry_codes={408,429,5xx}",
+      "data": null,
+      "timestamp": 1755251588.4104948
+    },
+    "ProxyPool Functionality": {
+      "success": true,
+      "details": "Pool fonctionnel: 3 proxys, sélection et scoring OK",
+      "data": {
+        "stats": {
+          "total_proxies": 3,
+          "available_proxies": 3,
+          "evicted_proxies": 0,
+          "average_score": -0.03333333333333333,
+          "proxies": [
+            {
+              "url": "http://proxy1.example.com:8080",
+              "score": -0.1,
+              "success_count": 1,
+              "failure_count": 1,
+              "consecutive_failures": 1
+            },
+            {
+              "url": "http://proxy2.example.com:8080",
+              "score": 0.0,
+              "success_count": 0,
+              "failure_count": 0,
+              "consecutive_failures": 0
+            },
+            {
+              "url": "http://proxy3.example.com:8080",
+              "score": 0.0,
+              "success_count": 0,
+              "failure_count": 0,
+              "consecutive_failures": 0
+            }
+          ]
+        }
+      },
+      "timestamp": 1755251588.4118087
+    },
+    "ResponseCache Functionality": {
+      "success": true,
+      "details": "Cache fonctionnel: TTL=5s, entrées=1",
+      "data": {
+        "stats": {
+          "total_entries": 1,
+          "active_entries": 1,
+          "expired_entries": 0,
+          "ttl_seconds": 5
+        }
+      },
+      "timestamp": 1755251588.4120834
+    },
+    "Concurrency Limits": {
+      "success": true,
+      "details": "Semaphores configurés correctement: max_per_host=2, extraction d'host OK",
+      "data": null,
+      "timestamp": 1755251588.4959831
+    },
+    "Backoff Calculation": {
+      "success": true,
+      "details": "Backoff exponentiel OK: [1.0, 2.0, 4.0, 8.0], jitter appliqué",
+      "data": {
+        "delays_no_jitter": [
+          1.0,
+          2.0,
+          4.0,
+          8.0
+        ],
+        "delays_with_jitter": [
+          1.2000174414107392,
+          1.826895756387579,
+          4.340700231530176,
+          6.236487237037781
+        ]
+      },
+      "timestamp": 1755251588.5291185
+    },
+    "Retry Logic": {
+      "success": true,
+      "details": "Logique de retry correcte: codes 408/429/5xx et exceptions réseau",
+      "data": null,
+      "timestamp": 1755251588.612725
+    },
+    "EnhancedSEOScrapingService Integration": {
+      "success": true,
+      "details": "Service intégré: 3 sources, transport configuré",
+      "data": {
+        "sources": [
+          "Amazon",
+          "Cdiscount",
+          "Fnac"
+        ],
+        "proxy_stats": {
+          "total_proxies": 1,
+          "available_proxies": 1,
+          "evicted_proxies": 0,
+          "average_score": 0.0,
+          "proxies": [
+            {
+              "url": "http://test-proxy.com:8080",
+              "score": 0.0,
+              "success_count": 0,
+              "failure_count": 0,
+              "consecutive_failures": 0
+            }
+          ]
+        }
+      },
+      "timestamp": 1755251588.790632
+    },
+    "Import Validation": {
+      "success": true,
+      "details": "Tous les imports fonctionnent correctement",
+      "data": null,
+      "timestamp": 1755251588.8293006
+    },
+    "Configuration Constraints": {
+      "success": true,
+      "details": "Toutes les contraintes respectées: concurrence=3, timeout=10s, cache=180s",
+      "data": null,
+      "timestamp": 1755251589.119374
+    },
+    "Observability and Logging": {
+      "success": true,
+      "details": "Observabilité complète: stats cache/proxy, nettoyage fonctionnel",
+      "data": {
+        "cache_stats": {
+          "total_entries": 0,
+          "active_entries": 0,
+          "expired_entries": 0,
+          "ttl_seconds": 180
+        },
+        "proxy_stats": {
+          "total_proxies": 1,
+          "available_proxies": 1,
+          "evicted_proxies": 0,
+          "average_score": 0.0,
+          "proxies": [
+            {
+              "url": "http://test-proxy.com:8080",
+              "score": 0.0,
+              "success_count": 0,
+              "failure_count": 0,
+              "consecutive_failures": 0
+            }
+          ]
+        }
+      },
+      "timestamp": 1755251589.2129147
+    }
+  },
+  "summary": {
+    "total_tests": 10,
+    "passed": 10,
+    "failed": 0,
+    "success_rate": 100.0
+  }
+}

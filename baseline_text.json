@@ -1,0 +1,33 @@
+{
+  "timestamp": "2025-08-15T22:15:21.677Z",
+  "homepage": {
+    "navigation": [
+      "ECOMSIMPLY",
+      "Accueil",
+      "Tarifs",
+      "Démo",
+      "Aide",
+      "Connexion",
+      "Affiliation"
+    ],
+    "hero": [
+      "IA Premium pour Fiches Produits",
+      "Automatisez vos fiches produit e-commerce",
+      "Lancer la Démo",
+      "Essai Gratuit 7 Jours"
+    ],
+    "pricing": [
+      "Gratuit",
+      "Pro",
+      "Premium",
+      "0€",
+      "29€",
+      "99€"
+    ],
+    "footer": [
+      "Mentions légales",
+      "Politique de confidentialité",
+      "Conditions d'utilisation"
+    ]
+  }
+}

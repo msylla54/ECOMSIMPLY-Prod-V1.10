@@ -1,0 +1,58 @@
+{
+  "overall_status": "❌ CRITIQUE",
+  "success_rate": 0.0,
+  "passed_tests": 0,
+  "total_tests": 6,
+  "total_time": 0.11775970458984375,
+  "test_results": [
+    {
+      "test_name": "Backend Health Check",
+      "success": false,
+      "details": "Status code: 502",
+      "timestamp": "2025-08-15T12:41:31.163436",
+      "data": ""
+    },
+    {
+      "test_name": "Publication Status Endpoint",
+      "success": false,
+      "details": "Status code: 502",
+      "timestamp": "2025-08-15T12:41:31.174159",
+      "data": ""
+    },
+    {
+      "test_name": "Publication History Endpoint",
+      "success": false,
+      "details": "Status code: 502",
+      "timestamp": "2025-08-15T12:41:31.180298",
+      "data": ""
+    },
+    {
+      "test_name": "Generate Sheet with Auto-Publication",
+      "success": false,
+      "details": "Status code: 502",
+      "timestamp": "2025-08-15T12:41:31.188273",
+      "data": ""
+    },
+    {
+      "test_name": "Publication System Integration",
+      "success": false,
+      "details": "Endpoint status publication non accessible",
+      "timestamp": "2025-08-15T12:41:31.193622",
+      "data": null
+    },
+    {
+      "test_name": "Publication Pipeline End-to-End",
+      "success": false,
+      "details": "Échec génération: 502",
+      "timestamp": "2025-08-15T12:41:31.199764",
+      "data": ""
+    }
+  ],
+  "summary": {
+    "backend_health": false,
+    "publication_apis": false,
+    "auto_publication": false,
+    "system_integration": false,
+    "end_to_end_pipeline": false
+  }
+}

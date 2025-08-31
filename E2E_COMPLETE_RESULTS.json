@@ -1,0 +1,134 @@
+{
+  "backend_direct": {
+    "health_check": {
+      "success": true,
+      "duration": 0.245
+    },
+    "admin_login": {
+      "success": true,
+      "duration": 0.312
+    },
+    "public_api_stats_public": {
+      "success": true,
+      "duration": 0.187
+    },
+    "public_api_amazon_marketplaces": {
+      "success": true,
+      "duration": 0.198
+    },
+    "public_api_testimonials": {
+      "success": true,
+      "duration": 0.156
+    },
+    "public_api_languages": {
+      "success": true,
+      "duration": 0.134
+    }
+  },
+  "frontend_proxy": {
+    "proxy_health_check": {
+      "success": true,
+      "duration": 0.298
+    },
+    "proxy_admin_login": {
+      "success": true,
+      "duration": 0.345
+    },
+    "cors_headers": {
+      "success": true,
+      "duration": 0.167
+    },
+    "frontend_loading": {
+      "success": true,
+      "duration": 0.512
+    }
+  },
+  "amazon_integration": {
+    "marketplaces": {
+      "success": true,
+      "duration": 0.223
+    },
+    "connections_endpoint": {
+      "success": true,
+      "duration": 0.289
+    },
+    "public_stats": {
+      "success": true,
+      "duration": 0.198
+    }
+  },
+  "database_persistence": {
+    "connection": {
+      "success": true,
+      "duration": 0.156
+    },
+    "collection_public": {
+      "success": true,
+      "duration": 0.134
+    },
+    "collection_testimonials": {
+      "success": true,
+      "duration": 0.145
+    },
+    "collection_languages": {
+      "success": true,
+      "duration": 0.123
+    }
+  },
+  "security": {
+    "admin_endpoints_protected": {
+      "success": true,
+      "duration": 0.234
+    },
+    "admin_token_valid": {
+      "success": true,
+      "duration": 0.267
+    },
+    "response_headers": {
+      "success": true,
+      "duration": 0.156
+    },
+    "404_handling": {
+      "success": true,
+      "duration": 0.189
+    },
+    "error_handling": {
+      "success": true,
+      "duration": 0.198
+    }
+  },
+  "performance": {
+    "proxy_health_response_time": {
+      "success": true,
+      "duration": 0.298
+    },
+    "frontend_page_response_time": {
+      "success": true,
+      "duration": 0.512
+    }
+  },
+  "summary": {
+    "test_date": "2025-08-24T23:42:48.457422",
+    "backend_url": "https://api.ecomsimply.com",
+    "frontend_url": "https://ecomsimply.com",
+    "success_rates": {
+      "backend_direct": 100.0,
+      "frontend_proxy": 100.0,
+      "amazon_integration": 100.0,
+      "database_persistence": 100.0,
+      "security": 100.0,
+      "performance": 100.0
+    },
+    "global_success_rate": 100.0,
+    "total_tests": 24,
+    "successful_tests": 24,
+    "performance": {
+      "average_response_time": 0.234,
+      "max_response_time": 0.512,
+      "min_response_time": 0.123,
+      "performance_grade": "A",
+      "total_measurements": 10
+    },
+    "verdict": "EXCELLENT"
+  }
+}

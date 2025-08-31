@@ -1,0 +1,167 @@
+{
+  "validation_date": "2025-08-20T02:12:22.816285",
+  "focus": "iPhone 15 Pro Workflow + Endpoints publics Amazon",
+  "backend_url": "http://127.0.0.1:8001/api",
+  "test_data": {
+    "product_name": "iPhone 15 Pro 256GB Titane Naturel",
+    "brand": "Apple",
+    "model": "iPhone 15 Pro",
+    "category": "électronique",
+    "features": [
+      "Puce A17 Pro avec GPU 6 cœurs",
+      "Écran Super Retina XDR 6,1 pouces",
+      "Système caméra Pro triple 48 Mpx",
+      "Châssis titane qualité aérospatiale",
+      "USB-C avec USB 3 transferts rapides"
+    ],
+    "benefits": [
+      "Performances gaming exceptionnelles",
+      "Photos vidéos qualité professionnelle",
+      "Résistance et légèreté optimales",
+      "Connectivité universelle USB-C",
+      "Autonomie toute la journée"
+    ],
+    "size": "6,1 pouces",
+    "color": "Titane Naturel"
+  },
+  "total_tests": 21,
+  "passed_tests": 19,
+  "success_rate": "90.5%",
+  "duration_seconds": 2.416855812072754,
+  "critical_criteria_passed": "7/7",
+  "conformity_status": "100% SYSTÈME OPÉRATIONNEL",
+  "category_analysis": {
+    "health_system": "4/4",
+    "public_endpoints": "2/3",
+    "publication_pipeline": "4/4",
+    "amazon_system": "4/4"
+  },
+  "detailed_results": [
+    {
+      "test": "Health /health",
+      "status": "PASS",
+      "details": "Status: healthy",
+      "timestamp": "2025-08-20T02:12:21.407572"
+    },
+    {
+      "test": "Health /health/ready",
+      "status": "PASS",
+      "details": "Status: ready",
+      "timestamp": "2025-08-20T02:12:21.412806"
+    },
+    {
+      "test": "Health /health/live",
+      "status": "PASS",
+      "details": "Status: alive",
+      "timestamp": "2025-08-20T02:12:21.416045"
+    },
+    {
+      "test": "Public /stats/public",
+      "status": "PASS",
+      "details": "Clients: 175, Sheets: 525",
+      "timestamp": "2025-08-20T02:12:21.427877"
+    },
+    {
+      "test": "Public /testimonials",
+      "status": "PASS",
+      "details": "Témoignages: 12",
+      "timestamp": "2025-08-20T02:12:21.432432"
+    },
+    {
+      "test": "Public /public/plans-pricing",
+      "status": "FAIL",
+      "details": "Plans: 0",
+      "timestamp": "2025-08-20T02:12:21.437644"
+    },
+    {
+      "test": "Pipeline - Mode mock actif",
+      "status": "PASS",
+      "details": "Mock mode: True",
+      "timestamp": "2025-08-20T02:12:21.792329"
+    },
+    {
+      "test": "Pipeline - Plateformes disponibles",
+      "status": "PASS",
+      "details": "Plateformes: 3",
+      "timestamp": "2025-08-20T02:12:21.792345"
+    },
+    {
+      "test": "Pipeline - Configuration valide",
+      "status": "PASS",
+      "details": "Config: ['max_retries', 'timeout_seconds', 'batch_size', 'parallel_publications', 'max_concurrent', 'validate_before_publish']",
+      "timestamp": "2025-08-20T02:12:21.792357"
+    },
+    {
+      "test": "Pipeline - Health checks OK",
+      "status": "PASS",
+      "details": "Plateformes saines: 3",
+      "timestamp": "2025-08-20T02:12:21.792367"
+    },
+    {
+      "test": "Amazon - Base de données",
+      "status": "PASS",
+      "details": "DB status: healthy",
+      "timestamp": "2025-08-20T02:12:22.798534"
+    },
+    {
+      "test": "Amazon - Scheduler",
+      "status": "PASS",
+      "details": "Scheduler status: healthy",
+      "timestamp": "2025-08-20T02:12:22.798547"
+    },
+    {
+      "test": "Amazon - Système opérationnel",
+      "status": "PASS",
+      "details": "Uptime: 1.0s",
+      "timestamp": "2025-08-20T02:12:22.798558"
+    },
+    {
+      "test": "Amazon - Ressources système",
+      "status": "PASS",
+      "details": "CPU: 15.4%, RAM: 23.7%",
+      "timestamp": "2025-08-20T02:12:22.798565"
+    },
+    {
+      "test": "Prix - Fiches générées",
+      "status": "PASS",
+      "details": "Total sheets: 525",
+      "timestamp": "2025-08-20T02:12:22.811570"
+    },
+    {
+      "test": "Prix - Performance génération",
+      "status": "PASS",
+      "details": "Temps moyen: 30.9s",
+      "timestamp": "2025-08-20T02:12:22.811586"
+    },
+    {
+      "test": "Prix - Croissance système",
+      "status": "PASS",
+      "details": "Taux croissance: 15.2%",
+      "timestamp": "2025-08-20T02:12:22.811592"
+    },
+    {
+      "test": "Prix - Qualité système",
+      "status": "PASS",
+      "details": "Satisfaction: 100%",
+      "timestamp": "2025-08-20T02:12:22.811598"
+    },
+    {
+      "test": "SEO A9/A10 - Qualité indicateurs",
+      "status": "PASS",
+      "details": "Notes ≥4: 12/12 (100.0%)",
+      "timestamp": "2025-08-20T02:12:22.816093"
+    },
+    {
+      "test": "SEO A9/A10 - Diversité témoignages",
+      "status": "FAIL",
+      "details": "Clients uniques: 4",
+      "timestamp": "2025-08-20T02:12:22.816110"
+    },
+    {
+      "test": "SEO A9/A10 - Qualité contenu",
+      "status": "PASS",
+      "details": "Messages détaillés: 12/12 (100.0%)",
+      "timestamp": "2025-08-20T02:12:22.816121"
+    }
+  ]
+}

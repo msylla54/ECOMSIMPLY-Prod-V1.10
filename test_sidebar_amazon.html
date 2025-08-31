@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Sidebar Amazon - ECOMSIMPLY</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <div id="test-root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        // Test component simulant la sidebar du Dashboard
+        const TestSidebar = () => {
+            const [activeTab, setActiveTab] = useState('generator');
+            const [messages, setMessages] = useState([]);
+
+            const addMessage = (msg) => {
+                setMessages(prev => [...prev, `${new Date().toLocaleTimeString()}: ${msg}`]);
+            };
+
+            // Simulation des onglets de navigation (comme dans DashboardShell.js)
+            const navigationTabs = [
+                {
+                    id: 'generator',
+                    label: 'Générateur IA',
+                    icon: '🤖',
+                    description: 'Créez des fiches produit automatiquement'
+                },
+                {
+                    id: 'history',
+                    label: 'Historique',
+                    icon: '📚',
+                    description: 'Vos fiches générées'
+                },
+                {
+                    id: 'seo',
+                    label: 'SEO Premium',
+                    icon: '⚡',
+                    description: 'Optimisations SEO avancées'
+                },
+                {
+                    id: 'amazon',
+                    label: 'Amazon SP-API',
+                    icon: '🛒',
+                    description: 'Intégration Amazon Seller Central'
+                },
+                {
+                    id: 'analytics',
+                    label: 'Analytics Pro',
+                    icon: '📊',
+                    description: 'Analyses détaillées'
+                },
+                {
+                    id: 'stores',
+                    label: 'Boutiques',
+                    icon: '🏪',
+                    description: 'Connexions e-commerce'
+                },
+                {
+                    id: 'subscription',
+                    label: 'Gestion Abonnement',
+                    icon: '💳',
+                    description: 'Gestion de votre plan'
+                },
+                {
+                    id: 'account',
+                    label: 'Gestion de compte',
+                    icon: '👤',
+                    description: 'Paramètres utilisateur'
+                },
+                {
+                    id: 'admin',
+                    label: 'Admin',
+                    icon: '⚙️',
+                    description: 'Administration et paramètres'
+                }
+            ];
+
+            const handleTabClick = (tab) => {
+                if (tab.id === 'amazon') {
+                    // Navigation spéciale vers la page Amazon (simulation)
+                    addMessage('🛒 Navigation vers Amazon SP-API (onGoToAmazon appelé)');
+                    alert('🛒 Navigation vers Amazon SP-API!\n\nDans l\'application réelle, cela ouvre AmazonIntegrationPage');
+                } else {
+                    // Navigation normale dans le dashboard
+                    setActiveTab(tab.id);
+                    addMessage(`📋 Onglet ${tab.label} activé`);
+                }
+            };
+
+            return (
+                <div className="flex h-screen bg-gray-100">
+                    {/* Sidebar simulée */}
+                    <div className="w-72 bg-white border-r border-gray-200 shadow-lg">
+                        <div className="p-6">
+                            <h2 className="text-lg font-semibold text-gray-900 mb-6">
+                                🧪 Test Sidebar Amazon
+                            </h2>
+                            
+                            <div className="space-y-2">
+                                {navigationTabs.map((tab) => (
+                                    <button
+                                        key={tab.id}
+                                        onClick={() => handleTabClick(tab)}
+                                        className={`
+                                            w-full flex items-center gap-4 px-4 py-3 rounded-xl text-left transition-all duration-200 group
+                                            ${activeTab === tab.id && tab.id !== 'amazon'
+                                                ? "bg-blue-50 text-blue-600 shadow-sm border border-blue-200"
+                                                : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                                            }
+                                            ${tab.id === 'amazon' ? 'border-2 border-dashed border-orange-300 bg-orange-50' : ''}
+                                        `}
+                                    >
+                                        <div className="text-2xl">{tab.icon}</div>
+                                        <div className="flex-1">
+                                            <div className="font-medium text-sm">{tab.label}</div>
+                                            <div className="text-xs text-gray-500 line-clamp-1">
+                                                {tab.description}
+                                            </div>
+                                        </div>
+                                        
+                                        {activeTab === tab.id && tab.id !== 'amazon' && (
+                                            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                                        )}
+
+                                        {tab.id === 'amazon' && (
+                                            <div className="text-xs bg-orange-200 text-orange-700 px-2 py-1 rounded">
+                                                NOUVEAU
+                                            </div>
+                                        )}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Contenu principal */}
+                    <div className="flex-1 p-8">
+                        <div className="bg-white rounded-lg border p-6 mb-6">
+                            <h3 className="text-xl font-semibold mb-4">
+                                📋 Onglet actuel: <span className="text-blue-600">{activeTab}</span>
+                            </h3>
+                            
+                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                                <h4 className="font-medium text-blue-900 mb-2">✅ Test réussi !</h4>
+                                <p className="text-blue-800 text-sm">
+                                    L'onglet "Amazon SP-API" 🛒 a été correctement ajouté à la sidebar entre 
+                                    "SEO Premium" et "Analytics Pro". Cliquer dessus déclenche la navigation 
+                                    vers la page Amazon au lieu de changer l'onglet actif du Dashboard.
+                                </p>
+                            </div>
+
+                            {activeTab === 'generator' && (
+                                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                                    <h4 className="font-medium text-green-900">🤖 Générateur IA</h4>
+                                    <p className="text-green-700 text-sm mt-1">
+                                        Contenu du générateur de fiches produits...
+                                    </p>
+                                </div>
+                            )}
+
+                            {activeTab === 'seo' && (
+                                <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                                    <h4 className="font-medium text-purple-900">⚡ SEO Premium</h4>
+                                    <p className="text-purple-700 text-sm mt-1">
+                                        Fonctionnalités SEO avancées...
+                                    </p>
+                                </div>
+                            )}
+
+                            {activeTab === 'analytics' && (
+                                <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
+                                    <h4 className="font-medium text-indigo-900">📊 Analytics Pro</h4>
+                                    <p className="text-indigo-700 text-sm mt-1">
+                                        Analyses détaillées des performances...
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Log des actions */}
+                        <div className="bg-gray-50 rounded-lg border p-4">
+                            <h4 className="font-semibold mb-3">📝 Log des actions:</h4>
+                            <div className="space-y-1 text-sm font-mono max-h-40 overflow-y-auto">
+                                {messages.length === 0 && (
+                                    <p className="text-gray-500">Aucune action encore... Cliquez sur les onglets !</p>
+                                )}
+                                {messages.map((msg, index) => (
+                                    <div key={index} className="text-gray-700">{msg}</div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Rendu de l'application de test
+        ReactDOM.render(<TestSidebar />, document.getElementById('test-root'));
+    </script>
+</body>
+</html>

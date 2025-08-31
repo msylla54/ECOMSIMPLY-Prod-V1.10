@@ -1,0 +1,19 @@
+=== DIAGNOSTIC REACT VERSIONS ===
+Date: Sun Aug 10 09:31:43 UTC 2025
+
+PROBLÈME DÉTECTÉ: React 19.0.0 incompatible avec @react-three/fiber
+
+Versions actuelles dans package.json:
+- react: ^19.0.0 (INCOMPATIBLE)
+- react-dom: ^19.0.0 (INCOMPATIBLE)
+- @react-three/fiber: ^8.16.8
+- three: ^0.166.1
+
+SOLUTION: Downgrade vers React 18.2.0 (LTS compatible)
+
+=== APRÈS CORRECTION ===
+✅ react: 18.2.0 (overridden)
+✅ react-dom: 18.2.0 (overridden)
+✅ @react-three/fiber: 8.18.0 (auto-update compatible)
+✅ three: 0.160.1 (compatible)
+✅ Toutes les dépendances utilisent react@18.2.0 (deduped)

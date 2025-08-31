@@ -1,0 +1,1 @@
+# Shopify marketplace integration package

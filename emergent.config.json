@@ -1,0 +1,62 @@
+{
+  "name": "ecomsimply-api",
+  "description": "ECOMSIMPLY - AI-powered SaaS for e-commerce product sheet generation",
+  "version": "1.6.0",
+  
+  "build": {
+    "production_optimized": true,
+    "health_check_path": "/api/health",
+    "startup_timeout": 60
+  },
+  
+  "deployment": {
+    "port": 8001,
+    "workers": 2,
+    "environment": "production",
+    "auto_scaling": true
+  },
+  
+  "health_check": {
+    "enabled": true,
+    "path": "/api/health",
+    "interval": 30,
+    "timeout": 10,
+    "retries": 3,
+    "grace_period": 5
+  },
+  
+  "environment_variables": [
+    "MONGO_URL",
+    "JWT_SECRET",
+    "ENCRYPTION_KEY",
+    "APP_BASE_URL",
+    "ADMIN_EMAIL",
+    "ADMIN_PASSWORD_HASH",
+    "ADMIN_BOOTSTRAP_TOKEN",
+    "DB_NAME",
+    "NODE_ENV",
+    "ENABLE_SCHEDULER",
+    "LOG_LEVEL",
+    "WORKERS"
+  ],
+  
+  "optional_variables": [
+    "STRIPE_SECRET_KEY",
+    "STRIPE_WEBHOOK_SECRET", 
+    "AMAZON_LWA_CLIENT_ID",
+    "AMAZON_LWA_CLIENT_SECRET",
+    "AWS_ROLE_ARN",
+    "AWS_REGION",
+    "ADDITIONAL_ALLOWED_ORIGINS"
+  ],
+  
+  "exclude_from_build": [
+    "tests_archive",
+    "docs_archive", 
+    "tests",
+    "*.test.py",
+    "__pycache__",
+    ".vscode",
+    ".idea"
+  ]
+}

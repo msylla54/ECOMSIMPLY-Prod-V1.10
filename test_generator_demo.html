@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Générateur Amazon Phase 2</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        const TestGeneratorDemo = () => {
+            const [step, setStep] = useState('input');
+            const [formData, setFormData] = useState({
+                product_name: '',
+                brand: ''
+            });
+            const [result, setResult] = useState(null);
+
+            const testGenerate = async () => {
+                if (!formData.product_name || !formData.brand) {
+                    alert('Veuillez remplir le nom et la marque');
+                    return;
+                }
+
+                setStep('generating');
+                
+                try {
+                    const response = await fetch('/api/demo/amazon/listings/generate', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    });
+                    
+                    const data = await response.json();
+                    setResult(data);
+                    setStep('preview');
+                } catch (error) {
+                    alert('Erreur: ' + error.message);
+                    setStep('input');
+                }
+            };
+
+            return (
+                <div className="max-w-4xl mx-auto p-6">
+                    <h1 className="text-2xl font-bold mb-6">🤖 Test Générateur Amazon Phase 2</h1>
+                    
+                    {step === 'input' && (
+                        <div className="bg-white p-6 rounded-lg border">
+                            <h2 className="text-lg font-semibold mb-4">Informations du produit</h2>
+                            
+                            <div className="grid grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label className="block text-sm font-medium mb-2">Nom du produit</label>
+                                    <input
+                                        type="text"
+                                        value={formData.product_name}
+                                        onChange={(e) => setFormData({...formData, product_name: e.target.value})}
+                                        className="w-full px-3 py-2 border rounded-md"
+                                        placeholder="Ex: iPhone 15 Pro Max"
+                                    />
+                                </div>
+                                
+                                <div>
+                                    <label className="block text-sm font-medium mb-2">Marque</label>
+                                    <input
+                                        type="text"
+                                        value={formData.brand}
+                                        onChange={(e) => setFormData({...formData, brand: e.target.value})}
+                                        className="w-full px-3 py-2 border rounded-md"
+                                        placeholder="Ex: Apple"
+                                    />
+                                </div>
+                            </div>
+                            
+                            <button
+                                onClick={testGenerate}
+                                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md"
+                            >
+                                🤖 Générer la fiche produit
+                            </button>
+                        </div>
+                    )}
+
+                    {step === 'generating' && (
+                        <div className="bg-white p-6 rounded-lg border text-center">
+                            <div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+                            <p>Génération en cours...</p>
+                        </div>
+                    )}
+
+                    {step === 'preview' && result && (
+                        <div className="bg-white p-6 rounded-lg border">
+                            <h2 className="text-lg font-semibold mb-4">✅ Fiche générée!</h2>
+                            
+                            <div className="space-y-4">
+                                <div>
+                                    <h3 className="font-medium">Titre:</h3>
+                                    <p className="text-sm bg-gray-50 p-2 rounded">{result.seo_content.title}</p>
+                                </div>
+                                
+                                <div>
+                                    <h3 className="font-medium">Bullet Points:</h3>
+                                    <ul className="text-sm bg-gray-50 p-2 rounded space-y-1">
+                                        {result.seo_content.bullet_points.map((bullet, i) => (
+                                            <li key={i}>• {bullet}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                                
+                                <div>
+                                    <h3 className="font-medium">Score d'optimisation:</h3>
+                                    <p className="text-green-600 font-semibold">{result.generation_metadata.optimization_score}%</p>
+                                </div>
+                            </div>
+                            
+                            <button
+                                onClick={() => {setStep('input'); setResult(null); setFormData({product_name: '', brand: ''});}}
+                                className="mt-4 bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-md"
+                            >
+                                Nouvelle génération
+                            </button>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        ReactDOM.render(<TestGeneratorDemo />, document.getElementById('root'));
+    </script>
+</body>
+</html>

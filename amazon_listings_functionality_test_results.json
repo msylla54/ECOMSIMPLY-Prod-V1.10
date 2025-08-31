@@ -1,0 +1,271 @@
+{
+  "timestamp": "2025-08-20T15:40:45.822556",
+  "duration_seconds": 0.1843569278717041,
+  "test_product": {
+    "brand": "Apple",
+    "product_name": "iPhone 15 Pro Max 256GB",
+    "features": [
+      "Puce A17 Pro avec GPU 6 cœurs",
+      "Écran Super Retina XDR 6,7 pouces",
+      "Système caméra Pro triple 48 Mpx",
+      "Châssis titane qualité aérospatiale",
+      "USB-C avec USB 3 transferts rapides"
+    ],
+    "category": "électronique",
+    "target_keywords": [
+      "smartphone",
+      "premium",
+      "apple",
+      "iphone",
+      "pro",
+      "titanium"
+    ],
+    "size": "6,7 pouces",
+    "color": "Titane Naturel",
+    "price": 1479.0,
+    "description": "Le smartphone le plus avancé d'Apple avec puce A17 Pro et design titane premium"
+  },
+  "test_results": {
+    "generator": {
+      "tested": true,
+      "success": true,
+      "details": {
+        "generation_time": 0.0005242824554443359,
+        "title_length": 119,
+        "title_valid": true,
+        "bullets_count": 5,
+        "bullets_valid": true,
+        "description_length": 1523,
+        "description_valid": true,
+        "keywords_bytes": 245,
+        "keywords_valid": true,
+        "optimization_score": 95.0,
+        "a9_a10_compliant": true
+      }
+    },
+    "validator": {
+      "tested": true,
+      "success": true,
+      "details": {
+        "validation_time": 0.00036025047302246094,
+        "overall_status": "APPROVED",
+        "validation_score": 100.0,
+        "errors_count": 0,
+        "warnings_count": 0,
+        "components_validated": 6,
+        "missing_components": [],
+        "component_scores": {
+          "title": 100.0,
+          "bullets": 100.0,
+          "description": 100.0,
+          "keywords": 100.0,
+          "images": 100.0,
+          "brand": 100.0
+        },
+        "approved": true,
+        "summary": "✅ Fiche approuvée (Score: 100.0%) - Prête pour publication"
+      }
+    },
+    "publisher": {
+      "tested": true,
+      "success": true,
+      "details": {
+        "preparation_time": 1.3113021850585938e-05,
+        "sku_generated": "APPLE-IPHONE15PROM-202508201540",
+        "listing_url": "https://amazon.fr/dp/APPLE-IPHONE15PROM-202508201540",
+        "product_type": "CONSUMER_ELECTRONICS",
+        "attributes_count": 10,
+        "missing_attributes": [],
+        "params_valid": true,
+        "payload_valid": true,
+        "sp_api_ready": true
+      }
+    },
+    "integration": {
+      "tested": true,
+      "success": true,
+      "details": {
+        "integration_time": 4.291534423828125e-06,
+        "data_consistency": true,
+        "title_validated": true,
+        "bullets_validated": true,
+        "description_validated": true,
+        "generator_score": 95.0,
+        "validator_score": 100.0,
+        "integration_score": 98.5,
+        "a9_a10_compliant": true,
+        "validator_approved": true,
+        "sp_api_ready": true,
+        "end_to_end_ready": true
+      }
+    }
+  },
+  "successful_components": 4,
+  "total_components": 4,
+  "success_rate": 100.0,
+  "generated_listing": {
+    "listing_id": "d561afb6-9648-4fde-9b4d-daf7fcc5644b",
+    "generated_at": "2025-08-20T15:40:45.643118",
+    "product_data": {
+      "brand": "Apple",
+      "product_name": "iPhone 15 Pro Max 256GB",
+      "features": [
+        "Puce A17 Pro avec GPU 6 cœurs",
+        "Écran Super Retina XDR 6,7 pouces",
+        "Système caméra Pro triple 48 Mpx",
+        "Châssis titane qualité aérospatiale",
+        "USB-C avec USB 3 transferts rapides"
+      ],
+      "category": "électronique",
+      "target_keywords": [
+        "smartphone",
+        "premium",
+        "apple",
+        "iphone",
+        "pro",
+        "titanium"
+      ],
+      "size": "6,7 pouces",
+      "color": "Titane Naturel",
+      "price": 1479.0,
+      "description": "Le smartphone le plus avancé d'Apple avec puce A17 Pro et design titane premium"
+    },
+    "seo_content": {
+      "title": "Apple iPhone 15 Pro Max 256GB Puce A17 Pro avec GPU 6 cœurs Écran Super Retina XDR 6,7 pouces 6,7 pouces Titane Naturel",
+      "bullet_points": [
+        "🎯 PERFORMANCE SUPÉRIEURE : Puce A17 Pro avec GPU 6 cœurs pour une meilleure expérience électronique",
+        "✅ QUALITÉ GARANTIE : Écran Super Retina XDR 6,7 pouces certifié pour vos besoins technologiques quotidiens",
+        "🚀 INNOVATION : Système caméra Pro triple 48 Mpx avec technologie avancée",
+        "💪 DURABILITÉ : Châssis titane qualité aérospatiale résistant et fiable",
+        "🎁 AVANTAGE UNIQUE : USB-C avec USB 3 transferts rapides exclusif pour électronique"
+      ],
+      "description": "\n            <h3>🌟 Apple iPhone 15 Pro Max 256GB</h3>\n            <p>Découvrez notre <strong>iPhone 15 Pro Max 256GB</strong> conçu pour répondre à tous vos besoins en matière de <em>électronique</em>. \n            Apple vous garantit une qualité exceptionnelle et une performance optimale.</p>\n            <h4>✨ Caractéristiques principales :</h4><ul><li><strong>Puce A17 Pro avec GPU 6 cœurs</strong> - Pour une expérience utilisateur optimale</li><li><strong>Écran Super Retina XDR 6,7 pouces</strong> - Pour une expérience utilisateur optimale</li><li><strong>Système caméra Pro triple 48 Mpx</strong> - Pour une expérience utilisateur optimale</li><li><strong>Châssis titane qualité aérospatiale</strong> - Pour une expérience utilisateur optimale</li><li><strong>USB-C avec USB 3 transferts rapides</strong> - Pour une expérience utilisateur optimale</li></ul>\n            <h4>🎯 Utilisation recommandée :</h4>\n            <p>Ce iPhone 15 Pro Max 256GB est parfait pour vos besoins technologiques quotidiens. \n            Sa conception innovante garantit une utilisation simple et efficace au quotidien.</p>\n            \n            <h4>🔒 Garantie Apple :</h4>\n            <p>Nous nous engageons à vous fournir un produit de qualité supérieure. \n            Notre service client est à votre disposition pour toute question.</p>\n            \n                <h4>📋 Informations complémentaires :</h4>\n                <p>Le smartphone le plus avancé d'Apple avec puce A17 Pro et design titane premium</p>\n                ",
+      "backend_keywords": "système, puce, smartphone, a17, new, iphone, usb-c, super, iphone15promax256gb, apple, brand, électronique, premium, qualité, livraison, apple électronique, titanium, titane, avec, électronique apple, france, châssis, quality, pro, caméra",
+      "image_requirements": {
+        "main_image": {
+          "description": "Image principale de iPhone 15 Pro Max 256GB sur fond blanc pur",
+          "min_resolution": "1000x1000",
+          "background": "white",
+          "format": "JPEG ou PNG",
+          "position": "Centré, occupant 85% du cadre",
+          "required": true
+        },
+        "additional_images": [
+          {
+            "image_position": 2,
+            "description": "iPhone 15 Pro Max 256GB en utilisation",
+            "min_resolution": "1000x1000",
+            "background": "Blanc ou contexte approprié",
+            "required": false
+          },
+          {
+            "image_position": 3,
+            "description": "Détails et caractéristiques de iPhone 15 Pro Max 256GB",
+            "min_resolution": "1000x1000",
+            "background": "Blanc ou contexte approprié",
+            "required": false
+          },
+          {
+            "image_position": 4,
+            "description": "Comparaison des tailles de iPhone 15 Pro Max 256GB",
+            "min_resolution": "1000x1000",
+            "background": "Blanc ou contexte approprié",
+            "required": false
+          },
+          {
+            "image_position": 5,
+            "description": "iPhone 15 Pro Max 256GB avec accessoires",
+            "min_resolution": "1000x1000",
+            "background": "Blanc ou contexte approprié",
+            "required": false
+          },
+          {
+            "image_position": 6,
+            "description": "Packaging de iPhone 15 Pro Max 256GB",
+            "min_resolution": "1000x1000",
+            "background": "Blanc ou contexte approprié",
+            "required": false
+          }
+        ],
+        "total_count": 6,
+        "validation_rules": {
+          "min_count": 1,
+          "max_count": 9,
+          "min_resolution": 1000,
+          "background": "white",
+          "format": [
+            "jpg",
+            "jpeg",
+            "png"
+          ]
+        }
+      }
+    },
+    "generation_metadata": {
+      "generator_version": "2.0.0",
+      "rules_applied": [
+        "A9",
+        "A10",
+        "Amazon_2025"
+      ],
+      "languages": [
+        "fr",
+        "en"
+      ],
+      "optimization_score": 95.0
+    }
+  },
+  "validation_result": {
+    "validation_id": "val_20250820_154045",
+    "validated_at": "2025-08-20T15:40:45.643763",
+    "overall_status": "APPROVED",
+    "validation_score": 100.0,
+    "details": {
+      "title": {
+        "component": "title",
+        "status": "APPROVED",
+        "score": 100.0,
+        "warnings": [],
+        "errors": []
+      },
+      "bullets": {
+        "component": "bullets",
+        "status": "APPROVED",
+        "score": 100.0,
+        "warnings": [],
+        "errors": []
+      },
+      "description": {
+        "component": "description",
+        "status": "APPROVED",
+        "score": 100.0,
+        "warnings": [],
+        "errors": []
+      },
+      "keywords": {
+        "component": "keywords",
+        "status": "APPROVED",
+        "score": 100.0,
+        "warnings": [],
+        "errors": []
+      },
+      "images": {
+        "component": "images",
+        "status": "APPROVED",
+        "score": 100.0,
+        "warnings": [],
+        "errors": []
+      },
+      "brand": {
+        "component": "brand",
+        "status": "APPROVED",
+        "score": 100.0,
+        "warnings": [],
+        "errors": []
+      }
+    },
+    "warnings": [],
+    "errors": [],
+    "critical_issues": []
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "baseline_timestamp": "2025-08-15T13:57:52Z",
+  "baseline_summary": "19 passed, 1 failed (known cooldown test issue), 39 warnings",
+  "total_tests": 20,
+  "passed_tests": 19,
+  "failed_tests": 1,
+  "failed_test_name": "test_cooldown_enforcement_between_stores",
+  "success_rate": "95%",
+  "baseline_established": true,
+  "notes": "Baseline établie avant implémentation PriceTruth - 1 test connu en échec dans orchestrator"
+}

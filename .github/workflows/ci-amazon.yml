@@ -1,0 +1,108 @@
+name: Amazon SP-API CI/CD Pipeline
+
+on:
+  push:
+    branches: [ feat/amazon-spapi-v1, main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  PYTHON_VERSION: '3.12'
+  NODE_VERSION: '18'
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+    
+    - name: Install Python dependencies
+      run: |
+        cd backend
+        pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install ruff pytest-cov black mypy
+    
+    - name: Install Frontend dependencies
+      run: |
+        cd frontend
+        npm install
+    
+    - name: Lint Python code
+      run: |
+        cd backend
+        ruff check . --output-format=github
+        black --check .
+        mypy . --ignore-missing-imports
+    
+    - name: Run Python tests
+      env:
+        MONGO_URL: ${{ secrets.MONGO_URL }}
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        AMZ_APP_CLIENT_ID: ${{ secrets.AMZ_APP_CLIENT_ID }}
+        AMZ_APP_CLIENT_SECRET: ${{ secrets.AMZ_APP_CLIENT_SECRET }}
+        AMZ_SELLER_REFRESH_TOKEN: ${{ secrets.AMZ_SELLER_REFRESH_TOKEN }}
+        AMZ_AWS_ROLE_ARN: ${{ secrets.AMZ_AWS_ROLE_ARN }}
+        AMZ_AWS_REGION: ${{ secrets.AMZ_AWS_REGION }}
+        AMZ_SPAPI_HOST: ${{ secrets.AMZ_SPAPI_HOST }}
+      run: |
+        cd backend
+        pytest tests/ -v --cov=. --cov-report=xml
+    
+    - name: Build Frontend
+      run: |
+        cd frontend
+        npm run build
+    
+    - name: Run E2E Tests with Playwright
+      env:
+        REACT_APP_BACKEND_URL: ${{ secrets.REACT_APP_BACKEND_URL }}
+        MONGO_URL: ${{ secrets.MONGO_URL }}
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      run: |
+        npx playwright install --with-deps chromium
+        npx playwright test --headed=false
+    
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-results
+        path: |
+          backend/coverage.xml
+          playwright-report/
+          test-results/
+
+  deploy:
+    needs: lint-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/feat/amazon-spapi')
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Vercel CLI
+      run: npm install --global vercel@latest
+    
+    - name: Pull Vercel Environment Information
+      run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+    
+    - name: Build Project Artifacts
+      run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+    
+    - name: Deploy Project Artifacts to Vercel
+      run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+      env:
+        VERCEL_ORG_ID: ${{ secrets.VERCEL_TEAM_ID }}
+        VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}

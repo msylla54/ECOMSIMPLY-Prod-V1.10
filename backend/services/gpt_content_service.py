@@ -74,7 +74,7 @@ class GPTContentService:
                 'primary': 'gpt-4-turbo',
                 'fallback': 'gpt-4o' if self.allow_gpt5_for_non_premium else 'gpt-4o-mini'
             },
-            'gratuit': {
+            'premium': {
                 'primary': 'gpt-4-turbo',
                 'fallback': 'gpt-4o' if self.allow_gpt5_for_non_premium else 'gpt-4o-mini'
             }
@@ -98,7 +98,7 @@ class GPTContentService:
         category: Optional[str] = None,
         use_case: Optional[str] = None,
         language: str = 'fr',
-        user_plan: str = 'gratuit',
+        user_plan: str = 'premium',
         price_data: Optional[Dict] = None,
         seo_data: Optional[Dict] = None,
         trending_data: Optional[Dict] = None,
@@ -110,7 +110,7 @@ class GPTContentService:
         start_time = time.time()
         
         # Détermination du routing selon le plan
-        routing_config = self.model_routing.get(user_plan, self.model_routing['gratuit'])
+        routing_config = self.model_routing.get(user_plan, self.model_routing['premium'])
         primary_model = routing_config['primary']
         fallback_model = routing_config['fallback']
         
@@ -365,7 +365,7 @@ class GPTContentService:
         category: Optional[str] = None,
         use_case: Optional[str] = None,
         language: str = 'fr',
-        user_plan: str = 'gratuit',
+        user_plan: str = 'premium',
         price_data: Optional[Dict] = None,
         seo_data: Optional[Dict] = None,
         trending_data: Optional[Dict] = None,  # ✅ PHASE 5: Données tendance
@@ -468,7 +468,7 @@ class GPTContentService:
         """Détermination du niveau utilisateur"""
         if user_plan == "premium":
             return "ULTIMATE PREMIUM"
-        elif user_plan == "pro":
+        elif user_plan == "premium":
             return "PRO PREMIUM"
         else:
             return "STANDARD"
@@ -562,7 +562,7 @@ Génère maintenant le JSON complet:"""
         product_name: str,
         product_description: str,
         category: Optional[str] = None,
-        user_plan: str = 'gratuit',
+        user_plan: str = 'premium',
         language: str = 'fr',
         user_id: Optional[str] = None
     ) -> Dict:

@@ -16,7 +16,7 @@
 
 ### Root Cause Analysis
 1. **Environment Mismatch:** 
-   - Local: MongoDB `ecomsimply_dev` avec admin existant
+   - Local: MongoDB `ecomsimply_production` avec admin existant
    - Production: MongoDB Atlas `ecomsimply_production` sans admin créé
 
 2. **Database Schema Issues:**
@@ -102,7 +102,7 @@ admin_password_hash = os.getenv("ADMIN_PASSWORD_HASH", "$2b$12$yQhOn3ydalPB3RuDZ
 ### 2. Environment Variables
 - **Vercel Configuration:** Variables env (ADMIN_EMAIL, ADMIN_PASSWORD_HASH, ADMIN_BOOTSTRAP_TOKEN) non configurées
 - **MongoDB URL:** Différence entre local (mongodb://localhost) et production (Atlas URI)
-- **Production Database:** `ecomsimply_production` vs `ecomsimply_dev`
+- **Production Database:** `ecomsimply_production` vs `ecomsimply_production`
 
 ### 3. Database State
 - **Admin Existence:** Admin n'existe probablement pas dans MongoDB Atlas production

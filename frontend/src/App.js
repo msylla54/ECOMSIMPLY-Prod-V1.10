@@ -55,7 +55,8 @@ import {
 } from './components/MotionComponents';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || (process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:8001');
-const API = `${BACKEND_URL}/api`; // Correction: ajouter /api au chemin de base
+// ✅ CORRECTION AUTH: Éviter la duplication /api - BACKEND_URL doit pointer vers la racine du backend
+const API = BACKEND_URL.endsWith('/api') ? BACKEND_URL : `${BACKEND_URL}/api`;
 
 // Configuration des catégories de produits pour améliorer le ciblage SEO
 const PRODUCT_CATEGORIES = {
@@ -1433,7 +1434,7 @@ const AuthProvider = ({ children }) => {
                 // Create success notification element
                 const successElement = document.createElement('div');
                 successElement.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded z-50 max-w-md text-center';
-                successElement.textContent = '🎉 Votre essai gratuit 7 jours a été activé avec succès! Profitez de toutes les fonctionnalités premium.';
+                successElement.textContent = '🎉 Votre essai gratuit 3 jours a été activé avec succès! Profitez de toutes les fonctionnalités premium.';
                 document.body.appendChild(successElement);
                 
                 // Clean URL parameters
@@ -2353,21 +2354,19 @@ const PremiumDemo = () => {
   );
 };
 
+// Landing Page Component (SIMPLIFIÉ - CTA DIRECT STRIPE)
 const LandingPage = ({ 
   onShowAffiliateLogin, 
-  onGoToDashboard, 
   showUserNavigation = false, 
   affiliateConfig = null,
-  onShowTrialPlanSelection,
-  selectedTrialPlan
+  onDirectPremiumCheckout  // CTA DIRECT VERS STRIPE CHECKOUT
 }) => {
   const { login, register, user } = useAuth();
   const { t, currentLanguage } = useLanguage();
   
   // Debug: Check if prop is defined
   console.log('🔍 LandingPage props:', { 
-    onShowTrialPlanSelection: typeof onShowTrialPlanSelection,
-    selectedTrialPlan 
+    onDirectPremiumCheckout: typeof onDirectPremiumCheckout
   });
   
   const [showLogin, setShowLogin] = useState(false);
@@ -2945,8 +2944,7 @@ const LandingPage = ({
     const result = await register(
       registerForm.name, 
       registerForm.email, 
-      registerForm.password,
-      selectedTrialPlan // Pass the selected trial plan
+      registerForm.password
     );
     
     if (!result.success) {
@@ -3837,7 +3835,7 @@ const LandingPage = ({
                   <button
                     onClick={() => {
                       setShowHelpPage(false);
-                      onShowTrialPlanSelection && onShowTrialPlanSelection();
+                      onDirectPremiumCheckout && onDirectPremiumCheckout('premium');
                     }}
                     className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold py-4 px-8 rounded-xl text-lg transition-all transform hover:scale-105"
                   >
@@ -3888,7 +3886,7 @@ const LandingPage = ({
               
               {showUserNavigation && (
                 <button
-                  onClick={onGoToDashboard}
+                  onClick={() => window.location.href = '/'}
                   className="bg-blue-600 hover:bg-blue-700 text-white px-2 md:px-4 py-1 md:py-2 rounded-md text-xs md:text-sm font-medium transition duration-300 whitespace-nowrap"
                 >
                   <span className="hidden md:inline">📊 {t('dashboard')}</span>
@@ -3933,7 +3931,7 @@ const LandingPage = ({
       {/* ✅ NOUVEAU: Hero 3D Section Immersive - AVEC SUSPENSE SÉCURISÉ */}
       {/* Hero Section avec animations CSS */}
       <HeroSection 
-        onShowTrialPlanSelection={onShowTrialPlanSelection}
+        onDirectPremiumCheckout={onDirectPremiumCheckout}
         currentLanguage={currentLanguage}
         PLATFORM_CONFIG={PLATFORM_CONFIG}
         className="mt-[76px]" // Marge pour navigation fixe
@@ -3947,9 +3945,7 @@ const LandingPage = ({
         dynamicPricing={dynamicPricing}
         t={t}
         currentLanguage={currentLanguage}
-        onShowTrialPlanSelection={onShowTrialPlanSelection}
-        setActiveModalTab={setActiveModalTab}
-        setShowLogin={setShowLogin}
+        onDirectPremiumCheckout={onDirectPremiumCheckout}
       />
 
       {/* Affiliate Call-to-Action Section */}
@@ -15390,225 +15386,64 @@ const Dashboard = ({ onGoToHome, affiliateConfig, loadingAffiliateConfig, loadAf
 };
 
 // Main App Component
-// Trial Modal Component using React Portal to bypass rendering issues
-const TrialModal = ({ 
-  showTrialPlanSelection, 
-  selectedTrialPlan, 
-  setSelectedTrialPlan, 
-  setShowTrialPlanSelection,
-  modalKey 
-}) => {
-  console.log('🔍 TrialModal render - showTrialPlanSelection:', showTrialPlanSelection, 'modalKey:', modalKey);
-  
-  if (!showTrialPlanSelection) {
-    console.log('❌ TrialModal - showTrialPlanSelection is false, returning null');
-    return null;
-  }
-  
-  console.log('✅ TrialModal rendering via Portal!');
-  
-  const modalContent = (
-    <div 
-      key={`trial-modal-${modalKey}`} 
-      className="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50 backdrop-blur-sm" 
-      style={{zIndex: 99999, position: 'fixed', top: 0, left: 0, right: 0, bottom: 0}}
-    >
-      <div className="min-h-screen px-4 text-center flex items-center justify-center">
-        <div className="inline-block align-middle bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all my-8 max-w-2xl w-full" style={{zIndex: 100000}}>
-          <div className="bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-4">
-            <h3 className="text-2xl font-bold text-white text-center">
-              🎉 Choisissez votre plan d'essai gratuit 7 jours
-            </h3>
-            <p className="text-purple-100 text-center mt-2">
-              Sélectionnez le plan que vous souhaitez tester gratuitement
-            </p>
-          </div>
-          
-          <div className="p-6">
-            <div className="grid md:grid-cols-2 gap-6">
-              {/* Plan Pro */}
-              <div 
-                className={`relative p-6 rounded-xl border-2 cursor-pointer transition-all ${
-                  selectedTrialPlan === 'pro' 
-                    ? 'border-purple-500 bg-purple-50 shadow-lg' 
-                    : 'border-gray-200 hover:border-purple-300 hover:shadow-md'
-                }`}
-                onClick={() => setSelectedTrialPlan('pro')}
-              >
-                {selectedTrialPlan === 'pro' && (
-                  <div className="absolute -top-2 -right-2 bg-purple-500 text-white rounded-full p-2">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                )}
-                
-                <div className="text-center">
-                  <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-full inline-block mb-4">
-                    <h4 className="font-bold text-lg">Plan Pro</h4>
-                  </div>
-                  <div className="text-3xl font-bold text-gray-800 mb-2">
-                    29€<span className="text-lg text-gray-600">/mois</span>
-                  </div>
-                  <p className="text-sm text-green-600 font-semibold mb-4">
-                    🎁 7 jours gratuits puis 29€/mois
-                  </p>
-                  
-                  <ul className="space-y-2 text-sm text-gray-600 mb-6">
-                    <li className="flex items-center">
-                      <span className="text-green-500 mr-2">✓</span>
-                      100 fiches par mois
-                    </li>
-                    <li className="flex items-center">
-                      <span className="text-green-500 mr-2">✓</span>
-                      IA avancée (GPT-4o)
-                    </li>
-                    <li className="flex items-center">
-                      <span className="text-green-500 mr-2">✓</span>
-                      Images haute qualité
-                    </li>
-                    <li className="flex items-center">
-                      <span className="text-green-500 mr-2">✓</span>
-                      Export multi-format
-                    </li>
-                    <li className="flex items-center">
-                      <span className="text-green-500 mr-2">✓</span>
-                      Support prioritaire
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
-              {/* Plan Premium */}
-              <div 
-                className={`relative p-6 rounded-xl border-2 cursor-pointer transition-all ${
-                  selectedTrialPlan === 'premium' 
-                    ? 'border-purple-500 bg-purple-50 shadow-lg' 
-                    : 'border-gray-200 hover:border-purple-300 hover:shadow-md'
-                }`}
-                onClick={() => setSelectedTrialPlan('premium')}
-              >
-                {selectedTrialPlan === 'premium' && (
-                  <div className="absolute -top-2 -right-2 bg-purple-500 text-white rounded-full p-2">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                )}
-                
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <span className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full">
-                    RECOMMANDÉ
-                  </span>
-                </div>
-                
-                <div className="text-center">
-                  <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2 rounded-full inline-block mb-4">
-                    <h4 className="font-bold text-lg">Plan Premium</h4>
-                  </div>
-                  <div className="text-3xl font-bold text-gray-800 mb-2">
-                    99€<span className="text-lg text-gray-600">/mois</span>
-                  </div>
-                  <p className="text-sm text-green-600 font-semibold mb-4">
-                    🎁 7 jours gratuits puis 99€/mois
-                  </p>
-                  
-                  <ul className="space-y-2 text-sm text-gray-600 mb-6">
-                    <li className="flex items-center">
-                      <span className="text-green-500 mr-2">✓</span>
-                      Fiches illimitées
-                    </li>
-                    <li className="flex items-center">
-                      <span className="text-green-500 mr-2">✓</span>
-                      IA avancée (GPT-4o)
-                    </li>
-                    <li className="flex items-center">
-                      <span className="text-green-500 mr-2">✓</span>
-                      Images haute qualité
-                    </li>
-                    <li className="flex items-center">
-                      <span className="text-green-500 mr-2">✓</span>
-                      Analytics avancés
-                    </li>
-                    <li className="flex items-center">
-                      <span className="text-green-500 mr-2">✓</span>
-                      Intégrations e-commerce
-                    </li>
-                    <li className="flex items-center">
-                      <span className="text-green-500 mr-2">✓</span>
-                      Support dédié
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-              <button
-                onClick={() => {
-                  if (selectedTrialPlan) {
-                    console.log('🎯 Plan selected, proceeding to registration with plan:', selectedTrialPlan);
-                    setShowTrialPlanSelection(false);
-                    // Store selected plan for registration
-                    localStorage.setItem('selectedTrialPlan', selectedTrialPlan);
-                    // Open registration modal (will be handled by the parent flow)
-                    window.location.hash = 'register-trial';
-                  }
-                }}
-                disabled={!selectedTrialPlan}
-                className={`px-8 py-3 rounded-xl font-semibold text-lg transition-all ${
-                  selectedTrialPlan 
-                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105' 
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                }`}
-              >
-                {selectedTrialPlan 
-                  ? `🚀 Commencer l'essai ${selectedTrialPlan === 'pro' ? 'Pro' : 'Premium'}` 
-                  : '👆 Sélectionnez un plan'
-                }
-              </button>
-              
-              <button
-                onClick={() => {
-                  console.log('🎯 Trial selection cancelled');
-                  setShowTrialPlanSelection(false);
-                  setSelectedTrialPlan(null);
-                }}
-                className="px-6 py-3 rounded-xl border-2 border-gray-300 text-gray-600 hover:border-gray-400 hover:text-gray-700 font-semibold transition-all"
-              >
-                Annuler
-              </button>
-            </div>
-
-            <div className="mt-6 p-4 bg-blue-50 rounded-xl">
-              <div className="flex items-start space-x-3">
-                <div className="text-blue-500 text-xl">ℹ️</div>
-                <div className="text-sm text-blue-800">
-                  <p className="font-semibold mb-1">Comment ça marche ?</p>
-                  <ul className="space-y-1">
-                    <li>• 7 jours d'accès COMPLET au plan choisi</li>
-                    <li>• Prélèvement automatique après les 7 jours</li>
-                    <li>• Vous pouvez annuler à tout moment pendant l'essai</li>
-                    <li>• Aucun engagement, annulation en 1 clic</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-  
-  // Use React Portal to render directly to document.body
-  return createPortal(modalContent, document.body);
-};
+// SUPPRIMÉ: TrialModal - Plus de popup de sélection, CTA direct vers Stripe Checkout
 
 const App = () => {
   const { user, loading, token } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();
+  
+  // ===============================================
+  // DIRECT STRIPE CHECKOUT - OFFRE UNIQUE PREMIUM
+  // ===============================================
+  
+  const handleDirectPremiumCheckout = async () => {
+    try {
+      console.log('🔥 Direct Premium Checkout - Starting...');
+      
+      // Vérifier l'authentification
+      if (!token) {
+        console.log('❌ User not authenticated, showing login modal');
+        setActiveModalTab('login');
+        setShowLogin(true);
+        return;
+      }
+      
+      // Appel direct à l'endpoint billing checkout
+      const response = await fetch(`${API}/billing/checkout`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          plan_type: 'premium',
+          with_trial: true
+        })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Erreur lors de la création de la session');
+      }
+      
+      const data = await response.json();
+      
+      if (data.success && data.checkout_url) {
+        console.log('✅ Checkout session created, redirecting to Stripe...');
+        window.location.href = data.checkout_url;
+      } else {
+        throw new Error(data.message || 'URL de checkout manquante');
+      }
+      
+    } catch (error) {
+      console.error('❌ Error in direct checkout:', error);
+      alert('Erreur lors de la création de la session de paiement. Veuillez réessayer.');
+    }
+  };
+  
+  // États de l'application
   const [currentView, setCurrentView] = useState('home'); // 'home', 'dashboard'
   const [affiliateMode, setAffiliateMode] = useState(false);
   const [affiliateCode, setAffiliateCode] = useState('');
@@ -15616,21 +15451,9 @@ const App = () => {
   const [affiliateLoginForm, setAffiliateLoginForm] = useState({ code: '' });
   const [affiliateError, setAffiliateError] = useState('');
   
-  // Trial plan selection states - with render forcing mechanism
-  const [showTrialPlanSelection, setShowTrialPlanSelection] = useState(false);
-  const [selectedTrialPlan, setSelectedTrialPlan] = useState(null); // 'pro' or 'premium'
-  const [modalKey, setModalKey] = useState(0); // Force re-render key
-  const [renderTrigger, setRenderTrigger] = useState(0); // Force re-render when state changes
-  
-  // Monitor showTrialPlanSelection state changes and force re-render
-  useEffect(() => {
-    console.log('🔥 STATE CHANGE DETECTED - showTrialPlanSelection:', showTrialPlanSelection);
-    if (showTrialPlanSelection) {
-      console.log('🎯 Trial modal should now be visible');
-      // Force component re-render by updating dummy state
-      setRenderTrigger(prev => prev + 1);
-    }
-  }, [showTrialPlanSelection]);
+  // États pour les modals (définis au niveau App pour accès global)
+  const [showLogin, setShowLogin] = useState(false);
+  const [activeModalTab, setActiveModalTab] = useState('login');
   
   // CRITICAL FIX: Automatically navigate to dashboard after successful login
   // BUT allow forcing home view when coming from demo
@@ -15650,535 +15473,8 @@ const App = () => {
     }
   }, [user, loading]);
   
-  // FINAL SOLUTION: Create DOM-based trial modal system that works 100%
-  useEffect(() => {
-    // Handle post-login actions for trial flow
-    const handlePostLoginActions = () => {
-      const postLoginAction = localStorage.getItem('postLoginAction');
-      if (postLoginAction) {
-        try {
-          const action = JSON.parse(postLoginAction);
-          console.log('🎯 Executing post-login action:', action);
-          
-          if (action.action === 'startTrial' && action.redirectTo) {
-            console.log('✅ Redirecting to payment after login');
-            localStorage.removeItem('postLoginAction'); // Clean up
-            setTimeout(() => {
-              window.location.href = action.redirectTo;
-            }, 500); // Small delay to ensure login is complete
-          }
-        } catch (error) {
-          console.error('Error handling post-login action:', error);
-          localStorage.removeItem('postLoginAction');
-        }
-      }
-    };
-    
-    // Check for post-login actions on component mount
-    handlePostLoginActions();
-    
-    // Also check when user state changes (login success)
-    const checkUserLogin = () => {
-      const token = localStorage.getItem('token');
-      const currentUser = localStorage.getItem('currentUser');
-      
-      if (token && currentUser) {
-        handlePostLoginActions();
-      }
-    };
-    
-    // Listen for storage changes (login events)
-    window.addEventListener('storage', checkUserLogin);
-    
-    const createTrialModal = () => {
-      // Remove existing modal if any
-      const existingModal = document.getElementById('trial-modal-portal');
-      if (existingModal) {
-        existingModal.remove();
-      }
-      
-      // Create modal element with full functionality
-      const modalContainer = document.createElement('div');
-      modalContainer.id = 'trial-modal-portal';
-      modalContainer.innerHTML = `
-        <div class="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50 backdrop-blur-sm" style="z-index: 99999; position: fixed; top: 0; left: 0; right: 0; bottom: 0;">
-          <div class="min-h-screen px-4 text-center flex items-center justify-center">
-            <div class="inline-block align-middle bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all my-8 max-w-2xl w-full" style="z-index: 100000;">
-              <div class="bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-4">
-                <h3 class="text-2xl font-bold text-white text-center">
-                  🎉 Choisissez votre plan d'essai gratuit 7 jours
-                </h3>
-                <p class="text-purple-100 text-center mt-2">
-                  Sélectionnez le plan que vous souhaitez tester gratuitement
-                </p>
-              </div>
-              
-              <div class="p-6">
-                <div class="grid md:grid-cols-2 gap-6">
-                  <!-- Plan Pro -->
-                  <div id="pro-plan" class="relative p-6 rounded-xl border-2 cursor-pointer transition-all border-gray-200 hover:border-purple-300 hover:shadow-md">
-                    <div class="text-center">
-                      <div class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-full inline-block mb-4">
-                        <h4 class="font-bold text-lg">Plan Pro</h4>
-                      </div>
-                      <div class="text-3xl font-bold text-gray-800 mb-2">
-                        <span class="line-through text-gray-400">29€</span>
-                        <span class="text-green-600 ml-2">0€</span>
-                        <span class="text-lg text-gray-600"> pour 7 jours</span>
-                      </div>
-                      <p class="text-sm text-green-600 font-semibold mb-4">
-                        🎁 Essai 100% GRATUIT puis 29€/mois
-                      </p>
-                      
-                      <ul class="space-y-2 text-sm text-gray-600 mb-6">
-                        <li class="flex items-center">
-                          <span class="text-green-500 mr-2">✓</span>
-                          100 fiches par mois
-                        </li>
-                        <li class="flex items-center">
-                          <span class="text-green-500 mr-2">✓</span>
-                          IA avancée (GPT-4o)
-                        </li>
-                        <li class="flex items-center">
-                          <span class="text-green-500 mr-2">✓</span>
-                          Images haute qualité
-                        </li>
-                        <li class="flex items-center">
-                          <span class="text-green-500 mr-2">✓</span>
-                          Export multi-format
-                        </li>
-                        <li class="flex items-center">
-                          <span class="text-green-500 mr-2">✓</span>
-                          Support prioritaire
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <!-- Plan Premium (Sélectionné par défaut) -->
-                  <div id="premium-plan" class="relative p-6 rounded-xl border-2 cursor-pointer transition-all border-purple-500 bg-purple-50 shadow-lg">
-                    <div class="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                      <span class="bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full">
-                        RECOMMANDÉ
-                      </span>
-                    </div>
-                    
-                    <div class="text-center">
-                      <div class="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2 rounded-full inline-block mb-4">
-                        <h4 class="font-bold text-lg">Plan Premium</h4>
-                      </div>
-                      <div class="text-3xl font-bold text-gray-800 mb-2">
-                        <span class="line-through text-gray-400">99€</span>
-                        <span class="text-green-600 ml-2">0€</span>
-                        <span class="text-lg text-gray-600"> pour 7 jours</span>
-                      </div>
-                      <p class="text-sm text-green-600 font-semibold mb-4">
-                        🎁 Essai 100% GRATUIT puis 99€/mois
-                      </p>
-                      
-                      <ul class="space-y-2 text-sm text-gray-600 mb-6">
-                        <li class="flex items-center">
-                          <span class="text-green-500 mr-2">✓</span>
-                          Fiches illimitées
-                        </li>
-                        <li class="flex items-center">
-                          <span class="text-green-500 mr-2">✓</span>
-                          IA avancée (GPT-4o)
-                        </li>
-                        <li class="flex items-center">
-                          <span class="text-green-500 mr-2">✓</span>
-                          Images haute qualité
-                        </li>
-                        <li class="flex items-center">
-                          <span class="text-green-500 mr-2">✓</span>
-                          Analytics avancés
-                        </li>
-                        <li class="flex items-center">
-                          <span class="text-green-500 mr-2">✓</span>
-                          Intégrations e-commerce
-                        </li>
-                        <li class="flex items-center">
-                          <span class="text-green-500 mr-2">✓</span>
-                          Support dédié
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-                  <button id="start-trial-btn" class="px-8 py-3 rounded-xl font-semibold text-lg transition-all bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105">
-                    Commencer essai Premium
-                  </button>
-                  
-                  <button id="cancel-trial-btn" class="px-6 py-3 rounded-xl border-2 border-gray-300 text-gray-600 hover:border-gray-400 hover:text-gray-700 font-semibold transition-all">
-                    Annuler
-                  </button>
-                </div>
-
-                <div class="mt-6 p-4 bg-blue-50 rounded-xl">
-                  <div class="flex items-start space-x-3">
-                    <div class="text-blue-500 text-xl">ℹ️</div>
-                    <div class="text-sm text-blue-800">
-                      <p class="font-semibold mb-1">Comment ça marche ?</p>
-                      <ul class="space-y-1">
-                        <li>• <strong>7 jours 100% GRATUITS</strong> (0€ payés)</li>
-                        <li>• Accès COMPLET au plan choisi pendant l'essai</li>
-                        <li>• <strong>1 seul essai gratuit par utilisateur</strong></li>
-                        <li>• Prélèvement automatique de l'abonnement après 7 jours</li>
-                        <li>• Annulation possible à tout moment pendant l'essai</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-      
-      // Add to DOM
-      document.body.appendChild(modalContainer);
-      console.log('✅ Trial modal created and added to DOM');
-      
-      // ATTENDRE UN PEU POUR QUE LE DOM SOIT PRÊT
-      setTimeout(() => {
-        // Add event listeners après que le DOM soit rendu
-        let selectedPlan = 'premium'; // Sélection Premium par défaut
-        
-        // Get elements after DOM insertion
-        const proPlan = document.getElementById('pro-plan');
-        const premiumPlan = document.getElementById('premium-plan');
-        const startBtn = document.getElementById('start-trial-btn');
-        const cancelBtn = document.getElementById('cancel-trial-btn');
-        
-        if (!proPlan || !premiumPlan || !startBtn || !cancelBtn) {
-          console.error('❌ Modal elements not found:', {
-            proPlan: !!proPlan,
-            premiumPlan: !!premiumPlan, 
-            startBtn: !!startBtn,
-            cancelBtn: !!cancelBtn
-          });
-          return;
-        }
-        
-        console.log('✅ All modal elements found, attaching events');
-      
-      const selectPlan = (planType) => {
-        selectedPlan = planType;
-        console.log('🎯 Plan selected:', planType);
-        
-        // Update visuals
-        if (planType === 'pro') {
-          proPlan.className = 'relative p-6 rounded-xl border-2 cursor-pointer transition-all border-purple-500 bg-purple-50 shadow-lg';
-          premiumPlan.className = 'relative p-6 rounded-xl border-2 cursor-pointer transition-all border-gray-200 hover:border-purple-300 hover:shadow-md';
-          startBtn.textContent = 'Commencer essai Pro';
-        } else {
-          premiumPlan.className = 'relative p-6 rounded-xl border-2 cursor-pointer transition-all border-purple-500 bg-purple-50 shadow-lg';
-          proPlan.className = 'relative p-6 rounded-xl border-2 cursor-pointer transition-all border-gray-200 hover:border-purple-300 hover:shadow-md';
-          startBtn.textContent = 'Commencer essai Premium';
-        }
-        
-        startBtn.disabled = false;
-        startBtn.className = 'px-8 py-3 rounded-xl font-semibold text-lg transition-all bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105';
-      };
-      
-      // Sélectionner Premium par défaut au chargement
-      selectPlan('premium');
-      
-      // Gestionnaires d'événements avec vérification renforcée
-      proPlan.onclick = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        selectPlan('pro');
-        console.log('🎯 Pro plan selected via click');
-      };
-      
-      premiumPlan.onclick = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        selectPlan('premium');
-        console.log('🎯 Premium plan selected via click');
-      };
-      
-      startBtn.onclick = async (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        console.log('🎯 Start trial button clicked - FIXED VERSION');
-        
-        if (!selectedPlan) {
-          console.error('❌ No plan selected');
-          alert('Veuillez sélectionner un plan avant de continuer.');
-          return;
-        }
-        
-        try {
-          console.log('🎯 Starting trial with plan:', selectedPlan);
-          localStorage.setItem('selectedTrialPlan', selectedPlan);
-          
-          // Check if user is logged in
-          const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
-          const token = localStorage.getItem('token');
-          
-          console.log('🔍 User status check - currentUser:', !!currentUser, 'token:', !!token);
-          
-          if (currentUser && token) {
-            // User is logged in - start trial subscription immediately
-            console.log('✅ User logged in, starting trial subscription');
-            modalContainer.remove();
-            
-            // Call the global trial function with error handling
-            if (typeof window.handleTrialSubscription === 'function') {
-              try {
-                console.log('🚀 Calling handleTrialSubscription for:', selectedPlan);
-                await window.handleTrialSubscription(selectedPlan);
-              } catch (error) {
-                console.error('❌ Trial subscription failed:', error);
-                alert('Erreur lors de l\'initialisation de l\'essai : ' + (error.message || 'Erreur inconnue'));
-                // Reopen the modal to show error
-                setTimeout(() => {
-                  window.showTrialModal();
-                }, 1000);
-              }
-            } else {
-              console.error('❌ handleTrialSubscription function not available');
-              alert('Erreur système : fonction d\'essai non disponible. Veuillez recharger la page.');
-              return;
-            }
-          } else {
-            // User not logged in - show login modal
-            console.log('⚠️ User not logged in, opening login modal');
-            modalContainer.remove();
-            
-            // Store trial plan for after login
-            localStorage.setItem('postLoginAction', JSON.stringify({
-              action: 'startTrial',
-              plan: selectedPlan,
-              useTrialFunction: true
-            }));
-            
-            console.log('💾 Stored post-login action for plan:', selectedPlan);
-            
-            // Open login modal with multiple fallback methods
-            if (typeof window.setShowLoginModal === 'function') {
-              console.log('✅ Opening login modal via React function');
-              window.setShowLoginModal(true);
-            } else if (document.querySelector('[data-modal="login"]')) {
-              console.log('✅ Opening login modal via DOM selector');
-              document.querySelector('[data-modal="login"]').click();
-            } else {
-              console.error('❌ No login modal method available');
-              alert('Veuillez vous connecter pour continuer avec l\'essai gratuit.');
-              // Fallback: reload and show login
-              window.location.reload();
-            }
-          }
-        } catch (error) {
-          console.error('❌ Error in trial start process:', error);
-          alert('Une erreur est survenue lors de l\'initialisation de l\'essai. Veuillez réessayer.');
-        }
-      };
-      
-      cancelBtn.onclick = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        console.log('🎯 Trial cancelled');
-        modalContainer.remove();
-      };
-      
-      // Close on backdrop click
-      modalContainer.onclick = (e) => {
-        if (e.target === modalContainer || e.target.classList.contains('bg-black')) {
-          modalContainer.remove();
-        }
-      };
-      
-      }, 100); // Petit délai pour s'assurer que le DOM est prêt
-    };
-    
-    // Global functions - definitive solution
-    window.showTrialModal = () => {
-      console.log('🎯 showTrialModal called - creating modal');
-      createTrialModal();
-    };
-    
-    window.openTrialModal = window.showTrialModal; // Alias
-    
-    // Create global login modal function
-    window.openLoginModal = () => {
-      console.log('🎯 openLoginModal called');
-      
-      // Use the exposed React function first
-      if (window.setShowLoginModal) {
-        console.log('✅ Using React setShowLoginModal function');
-        window.setShowLoginModal(true);
-        return;
-      }
-      
-      // Fallback: try to find and click login button
-      const buttons = document.querySelectorAll('button');
-      for (let button of buttons) {
-        const text = button.textContent || '';
-        if (text.includes('Connexion') || text.includes('Login')) {
-          console.log('✅ Found login button, clicking');
-          button.click();
-          return;
-        }
-      }
-      
-      // Last resort: use custom event
-      console.log('⚠️ Using custom event fallback');
-      const event = new CustomEvent('openLogin');
-      window.dispatchEvent(event);
-    };
-    
-    // Global function placeholder (will be overridden by React)
-    window.setShowLoginModal = (show) => {
-      console.log('🎯 Placeholder setShowLoginModal called with:', show);
-    };
-    
-    // Replace ALL button handlers on page load
-    const replaceTrialButtons = () => {
-      console.log('🔧 Searching for all trial buttons...');
-      
-      // Find all trial buttons and replace their handlers
-      const allButtons = document.querySelectorAll('button');
-      let replacedCount = 0;
-      
-      allButtons.forEach(button => {
-        const text = button.textContent || '';
-        const lowerText = text.toLowerCase();
-        
-        // Match ALL subscription/payment buttons (ÉTENDU MAIS EXCLUANT LES BOUTONS DE MODAL)
-        const isTrialButton = 
-          (lowerText.includes('essai gratuit') ||
-          lowerText.includes('essayer gratuitement') ||
-          lowerText.includes('essayer') && lowerText.includes('gratuitement') ||
-          lowerText.includes('free trial') ||
-          lowerText.includes('gratuit') && lowerText.includes('jours') ||
-          lowerText.includes('7 jours') ||
-          lowerText.includes('trial') ||
-          text.includes('🚀') && lowerText.includes('essai') ||
-          lowerText.includes('pendant 7 jours') ||
-          // NOUVEAU : Tous les boutons d'abonnement/paiement
-          lowerText.includes('commencer') ||
-          lowerText.includes('choisir') && (lowerText.includes('pro') || lowerText.includes('premium')) ||
-          lowerText.includes('s\'abonner') ||
-          lowerText.includes('abonnement') ||
-          lowerText.includes('payer') ||
-          lowerText.includes('€') && !lowerText.includes('0€') || // Prix mais pas essais
-          lowerText.includes('plan') && (lowerText.includes('pro') || lowerText.includes('premium')) ||
-          text.includes('29') || text.includes('99') || // Prix spécifiques
-          text.includes('✨')) &&
-          // Conditions d'exclusion RENFORCÉES pour éviter de convertir les boutons de navigation
-          !button.closest('.trial-modal') &&
-          !button.closest('#trial-modal-portal') &&
-          !button.id?.includes('trial') &&
-          !lowerText.includes('commencer essai') &&
-          // CRITICAL FIX: Exclude dashboard navigation tabs
-          !button.closest('[data-tab]') &&
-          !button.hasAttribute('data-tab-button') &&
-          // NOUVEAU: Exclure spécifiquement les boutons de navigation sidebar
-          !button.closest('aside') &&
-          !button.closest('[class*="sidebar"]') &&
-          !button.closest('nav') &&
-          !(button.getAttribute('role') === 'tab') &&
-          // NOUVEAU: Exclure les boutons avec icônes de navigation (emojis)
-          !(lowerText.includes('abonnement') && button.textContent.includes('💳')) &&
-          !(lowerText.includes('admin') && button.textContent.includes('⚙️')) &&
-          !(lowerText.includes('générateur') && button.textContent.includes('🤖')) &&
-          !(button.textContent.includes('🔘') || button.textContent.includes('✅')) &&
-          !button.classList.contains('border-purple-500') &&
-          // NOUVEAU: Exclure spécifiquement les boutons dans l'onglet Automatisation de SEO Premium
-          !button.closest('[data-automation-tab]') &&
-          !(button.closest('.space-y-6') && document.querySelector('h3')?.textContent?.includes('🤖 Automatisation SEO'));
-        
-        if (isTrialButton) {
-          console.log('🔧 Converting subscription button to trial:', text.substring(0, 50) + '...');
-          
-          // Force override any existing handler
-          button.removeEventListener('click', button.onclick);
-          button.onclick = (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('🎯 Trial button clicked - opening modal via DOM:', text.substring(0, 30));
-            window.showTrialModal();
-          };
-          
-          // Also add event listener as backup
-          button.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation(); 
-            console.log('🎯 Trial button clicked via addEventListener:', text.substring(0, 30));
-            window.showTrialModal();
-          }, true); // Use capture to override
-          
-          // NOUVEAU : Mettre à jour le texte du bouton pour indiquer l'essai gratuit
-          if (!lowerText.includes('essai') && !lowerText.includes('gratuit') && !lowerText.includes('0€')) {
-            if (lowerText.includes('pro') || text.includes('29')) {
-              button.innerHTML = '🚀 Essai Gratuit Pro (7 jours)';
-              button.className = button.className.replace(/bg-\w+-\d+/g, 'bg-green-600').replace(/hover:bg-\w+-\d+/g, 'hover:bg-green-700');
-            } else if (lowerText.includes('premium') || text.includes('99')) {
-              button.innerHTML = '🚀 Essai Gratuit Premium (7 jours)';
-              button.className = button.className.replace(/bg-\w+-\d+/g, 'bg-purple-600').replace(/hover:bg-\w+-\d+/g, 'hover:bg-purple-700');
-            } else if (lowerText.includes('commencer') || lowerText.includes('choisir')) {
-              button.innerHTML = '🚀 Essai Gratuit 7 jours';
-              button.className = button.className.replace(/bg-\w+-\d+/g, 'bg-green-600').replace(/hover:bg-\w+-\d+/g, 'hover:bg-green-700');
-            }
-          }
-          
-          replacedCount++;
-        }
-      });
-      
-      console.log(`✅ Converted ${replacedCount} subscription buttons to free trials`);
-      
-      // SPECIFIC OVERRIDE: Force replace any button containing "GRATUITEMENT pendant 7 jours"
-      const specificButton = Array.from(document.querySelectorAll('button')).find(btn => 
-        btn.textContent && btn.textContent.includes('GRATUITEMENT pendant 7 jours')
-      );
-      
-      if (specificButton) {
-        console.log('🎯 FORCE REPLACING specific GRATUITEMENT button');
-        specificButton.onclick = (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          console.log('🎯 SPECIFIC GRATUITEMENT button clicked - opening modal');
-          window.showTrialModal();
-        };
-        specificButton.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          console.log('🎯 SPECIFIC GRATUITEMENT addEventListener triggered');
-          window.showTrialModal();
-        }, true);
-      }
-    };
-    
-    // Replace buttons immediately and on DOM changes
-    replaceTrialButtons();
-    
-    // Set up observer for dynamically added buttons
-    const observer = new MutationObserver(() => {
-      replaceTrialButtons();
-    });
-    
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
-    
-    // Cleanup
-    return () => {
-      delete window.showTrialModal;
-      delete window.openTrialModal;
-      observer.disconnect();
-      const existingModal = document.getElementById('trial-modal-portal');
-      if (existingModal) {
-        existingModal.remove();
-      }
-    };
-  }, []);
+  // SUPPRIMÉ: Toute la logique legacy TrialModal
+  // Plus de modal de sélection, CTA direct vers Stripe Checkout
   
   // Affiliate configuration state (moved from AdminPanel to make it globally accessible)
   const [affiliateConfig, setAffiliateConfig] = useState(null);
@@ -16361,12 +15657,7 @@ const App = () => {
         <LandingPage 
           onShowAffiliateLogin={() => setShowAffiliateLogin(true)} 
           affiliateConfig={affiliateConfig}
-          onShowTrialPlanSelection={() => {
-            console.log('🎯 onShowTrialPlanSelection called');
-            setShowTrialPlanSelection(true);
-            console.log('🎯 setShowTrialPlanSelection(true) called');
-          }}
-          selectedTrialPlan={selectedTrialPlan}
+          onDirectPremiumCheckout={handleDirectPremiumCheckout}
         />
       </>
     );
@@ -16382,15 +15673,9 @@ const App = () => {
       <>
         <LandingPage 
           onShowAffiliateLogin={() => setShowAffiliateLogin(true)} 
-          onGoToDashboard={goToDashboard}
           showUserNavigation={true}
           affiliateConfig={affiliateConfig}
-          onShowTrialPlanSelection={() => {
-            console.log('🎯 onShowTrialPlanSelection called');
-            setShowTrialPlanSelection(true);
-            console.log('🎯 setShowTrialPlanSelection(true) called');
-          }}
-          selectedTrialPlan={selectedTrialPlan}
+          onDirectPremiumCheckout={handleDirectPremiumCheckout}
         />
       </>
     );
@@ -16400,66 +15685,7 @@ const App = () => {
   
   // Debug: Add console log for render
   // Debug log for each render - single log to avoid React optimization issues
-  console.log('🔍 App render - showTrialPlanSelection:', showTrialPlanSelection, 'currentView:', currentView, 'user:', !!user, 'modalKey:', modalKey, 'renderTrigger:', renderTrigger);
-
-  // PRIORITY: Always render trial modal first if showTrialPlanSelection is true, regardless of other conditions
-  if (showTrialPlanSelection) {
-    console.log('🎯 PRIORITY MODAL RENDERING - showTrialPlanSelection is true');
-    return (
-      <>
-        {/* Always render the content first */}
-        {user && !loading ? (
-          currentView === 'dashboard' ? (
-            <Dashboard 
-              onGoToHome={goToHome} 
-              affiliateConfig={affiliateConfig}
-              loadingAffiliateConfig={loadingAffiliateConfig}
-              loadAffiliateConfig={loadAffiliateConfig}
-            />
-          ) : (
-            <LandingPage 
-              onShowAffiliateLogin={() => setShowAffiliateLogin(true)} 
-              onGoToDashboard={goToDashboard}
-              showUserNavigation={true}
-              affiliateConfig={affiliateConfig}
-              onShowTrialPlanSelection={() => {
-                console.log('🎯 onShowTrialPlanSelection called - using DOM modal');
-                if (window.showTrialModal) {
-                  window.showTrialModal();
-                } else {
-                  console.error('❌ window.showTrialModal not available');
-                }
-              }}
-              selectedTrialPlan={selectedTrialPlan}
-            />
-          )
-        ) : (
-          <LandingPage 
-            onShowAffiliateLogin={() => setShowAffiliateLogin(true)} 
-            affiliateConfig={affiliateConfig}
-            onShowTrialPlanSelection={() => {
-              console.log('🎯 onShowTrialPlanSelection called - using DOM modal');
-              if (window.showTrialModal) {
-                window.showTrialModal();
-              } else {
-                console.error('❌ window.showTrialModal not available');
-              }
-            }}
-            selectedTrialPlan={selectedTrialPlan}
-          />
-        )}
-        
-        {/* Then the modal ALWAYS on top */}
-        <TrialModal 
-          showTrialPlanSelection={showTrialPlanSelection}
-          selectedTrialPlan={selectedTrialPlan}
-          setSelectedTrialPlan={setSelectedTrialPlan}
-          setShowTrialPlanSelection={setShowTrialPlanSelection}
-          modalKey={modalKey}
-        />
-      </>
-    );
-  }
+  console.log('🔍 App render - currentView:', currentView, 'user:', !!user);
 
   // For logged-in users, show dashboard, amazon ou home based on currentView
   if (user && !loading) {
@@ -16472,13 +15698,6 @@ const App = () => {
             loadingAffiliateConfig={loadingAffiliateConfig}
             loadAffiliateConfig={loadAffiliateConfig}
           />
-          <TrialModal 
-            showTrialPlanSelection={showTrialPlanSelection}
-            selectedTrialPlan={selectedTrialPlan}
-            setSelectedTrialPlan={setSelectedTrialPlan}
-            setShowTrialPlanSelection={setShowTrialPlanSelection}
-            modalKey={modalKey}
-          />
         </>
       );
     }
@@ -16488,25 +15707,9 @@ const App = () => {
       <>
         <LandingPage 
           onShowAffiliateLogin={() => setShowAffiliateLogin(true)} 
-          onGoToDashboard={goToDashboard}
           showUserNavigation={true}
           affiliateConfig={affiliateConfig}
-          onShowTrialPlanSelection={() => {
-            console.log('🎯 onShowTrialPlanSelection called - using DOM modal');
-            if (window.showTrialModal) {
-              window.showTrialModal();
-            } else {
-              console.error('❌ window.showTrialModal not available');
-            }
-          }}
-          selectedTrialPlan={selectedTrialPlan}
-        />
-        <TrialModal 
-          showTrialPlanSelection={showTrialPlanSelection}
-          selectedTrialPlan={selectedTrialPlan}
-          setSelectedTrialPlan={setSelectedTrialPlan}
-          setShowTrialPlanSelection={setShowTrialPlanSelection}
-          modalKey={modalKey}
+          onDirectPremiumCheckout={handleDirectPremiumCheckout}
         />
       </>
     );
@@ -16518,22 +15721,7 @@ const App = () => {
       <LandingPage 
         onShowAffiliateLogin={() => setShowAffiliateLogin(true)} 
         affiliateConfig={affiliateConfig}
-        onShowTrialPlanSelection={() => {
-          console.log('🎯 onShowTrialPlanSelection called - using DOM modal');
-          if (window.showTrialModal) {
-            window.showTrialModal();
-          } else {
-            console.error('❌ window.showTrialModal not available');
-          }
-        }}
-        selectedTrialPlan={selectedTrialPlan}
-      />
-      <TrialModal 
-        showTrialPlanSelection={showTrialPlanSelection}
-        selectedTrialPlan={selectedTrialPlan}
-        setSelectedTrialPlan={setSelectedTrialPlan}
-        setShowTrialPlanSelection={setShowTrialPlanSelection}
-        modalKey={modalKey}
+        onDirectPremiumCheckout={handleDirectPremiumCheckout}
       />
     </>
   );

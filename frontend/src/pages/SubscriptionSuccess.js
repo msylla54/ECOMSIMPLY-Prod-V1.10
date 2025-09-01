@@ -199,7 +199,7 @@ const SubscriptionSuccess = () => {
               <li className="flex items-start">
                 <span className="text-blue-500 mr-2 mt-1">•</span>
                 <span className="text-blue-700">
-                  Profitez de votre essai gratuit de 7 jours
+                  Profitez de votre essai gratuit de 3 jours
                 </span>
               </li>
             )}

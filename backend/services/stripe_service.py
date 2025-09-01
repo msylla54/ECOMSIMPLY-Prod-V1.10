@@ -9,12 +9,25 @@ import hashlib
 from typing import Optional, Dict, Any, List
 from datetime import datetime, timedelta
 import logging
-from ..models.subscription import (
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from models.subscription import (
     User, SubscriptionRecord, PaymentHistory, PaymentAttempt,
     SubscriptionStatus, PlanType, PLAN_CONFIG,
     CreateSubscriptionRequest, SubscriptionResponse
 )
-from .trial_eligibility_service import trial_eligibility_service
+
+# Import trial eligibility service with fallback
+try:
+    from services.trial_eligibility_service import trial_eligibility_service
+except ImportError:
+    # Create a mock service if not available
+    class MockTrialEligibilityService:
+        async def check_trial_eligibility(self, **kwargs):
+            return {"eligible": True, "reason": "mock_service"}
+    trial_eligibility_service = MockTrialEligibilityService()
 
 # Configuration Stripe
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")

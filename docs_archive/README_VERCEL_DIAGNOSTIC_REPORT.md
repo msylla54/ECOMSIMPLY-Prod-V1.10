@@ -58,8 +58,8 @@ Après correction des variables d'environnement locales :
 
 **Backend (`/app/backend/.env`):**
 ```env
-MONGO_URL=mongodb://localhost:27017/ecomsimply_dev
-DB_NAME=ecomsimply_dev
+MONGO_URL=mongodb://localhost:27017/ecomsimply_production
+DB_NAME=ecomsimply_production
 ADMIN_EMAIL=msylla54@gmail.com
 ADMIN_PASSWORD_HASH=$2b$12$samplehashfordevelopmentonly
 JWT_SECRET=dev_jwt_secret_key_for_local_development

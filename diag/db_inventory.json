@@ -1,0 +1,11 @@
+{
+  "database": "ecomsimply_production",
+  "timestamp": "2025-08-31T22:17:17.164402",
+  "connection_test": "success",
+  "collections": {},
+  "summary": {
+    "total_collections": 0,
+    "total_documents": 0,
+    "total_indexes": 0
+  }
+}

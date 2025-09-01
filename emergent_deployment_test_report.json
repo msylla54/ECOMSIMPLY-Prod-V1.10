@@ -26,7 +26,7 @@
           "timestamp": "2025-08-30T16:40:25.338574",
           "version": "1.0.0",
           "mongo": "ok",
-          "database": "ecomsimply_dev",
+          "database": "ecomsimply_production",
           "response_time_ms": 0.96
         },
         "required_fields_present": true,
@@ -186,7 +186,7 @@
             "status": "passed"
           },
           "MONGO_URL": {
-            "current_value": "mongodb://localhost:27017/ecomsimply_dev",
+            "current_value": "mongodb://localhost:27017/ecomsimply_production",
             "is_set": true,
             "required": true,
             "default": null,

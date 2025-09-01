@@ -1,11 +1,12 @@
 /**
  * 🚀 ECOMSIMPLY - Client API Centralisé
  * Gestion centralisée de tous les appels API avec respect strict des ENV Vercel
+ * ✅ AUTH FIX: Construction d'URL cohérente avec App.js
  */
 
 import axios from 'axios';
 
-// ✅ Configuration ENV avec fallback sécurisé
+// ✅ AUTH FIX: Configuration ENV cohérente avec App.js
 const getBackendURL = () => {
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
   
@@ -19,9 +20,9 @@ const getBackendURL = () => {
   return backendUrl;
 };
 
-// Construction sécurisée des URLs API
+// ✅ AUTH FIX: Construction sécurisée des URLs API (éviter double /api)
 const BACKEND_URL = getBackendURL();
-const API_BASE_URL = `${BACKEND_URL}/api`;
+const API_BASE_URL = BACKEND_URL.endsWith('/api') ? BACKEND_URL : `${BACKEND_URL}/api`;
 
 // ✅ Instance Axios centralisée avec configuration optimisée
 const apiClient = axios.create({

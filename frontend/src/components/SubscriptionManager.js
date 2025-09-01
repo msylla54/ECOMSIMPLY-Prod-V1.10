@@ -625,7 +625,7 @@ const AvailablePlans = ({ plans, currentStatus, onCreate, onCreateNewAfterFailur
                   disabled={loading || isCurrentPlan}
                   className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {loading ? '⏳ Traitement...' : `🎁 Essai gratuit 7 jours`}
+                  {loading ? '⏳ Traitement...' : `🎁 Essai gratuit 3 jours`}
                 </button>
               )}
 
@@ -699,7 +699,7 @@ const AvailablePlans = ({ plans, currentStatus, onCreate, onCreateNewAfterFailur
       <div className="mt-12 bg-gray-50 rounded-xl p-6">
         <h3 className="font-bold text-gray-900 mb-4">💡 Informations importantes</h3>
         <ul className="space-y-2 text-gray-700">
-          <li>• L'essai gratuit de 7 jours n'est disponible qu'une seule fois par compte</li>
+          <li>• L'essai gratuit de 3 jours n'est disponible qu'une seule fois par compte</li>
           <li>• Même après un essai expiré ou échoué, vous pouvez toujours vous abonner</li>
           <li>• Aucun engagement - Annulez à tout moment</li>
           <li>• Paiement sécurisé avec Stripe</li>

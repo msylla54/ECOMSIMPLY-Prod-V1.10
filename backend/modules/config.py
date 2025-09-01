@@ -21,9 +21,11 @@ class Config:
     def _load_config(self):
         """Load configuration from environment variables"""
         
-        # Database Configuration
+        # Database Configuration - URI EXCLUSIVE
         self.MONGO_URL = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
-        self.DB_NAME = os.environ.get('DB_NAME', 'ecomsimply_production')
+        
+        # SUPPRIMÉ: DB_NAME - utilisation exclusive de l'URI
+        # self.DB_NAME = os.environ.get('DB_NAME', 'ecomsimply_production')
         
         # Security Configuration
         self.JWT_SECRET = os.environ.get('JWT_SECRET')
@@ -103,10 +105,9 @@ class Config:
         logger.info("✅ Configuration validation passed")
     
     def get_database_config(self) -> Dict[str, Any]:
-        """Get database configuration"""
+        """Get database configuration - URI ONLY"""
         return {
             "url": self.MONGO_URL,
-            "database_name": self.DB_NAME,
             "connection_options": {
                 "serverSelectionTimeoutMS": 5000,
                 "connectTimeoutMS": 10000,
@@ -160,7 +161,7 @@ class Config:
     
     def __repr__(self) -> str:
         """String representation (safe - no secrets)"""
-        return f"Config(environment={self.ENVIRONMENT}, db_name={self.DB_NAME}, debug={self.DEBUG})"
+        return f"Config(environment={self.ENVIRONMENT}, mongo_url_configured={bool(self.MONGO_URL)}, debug={self.DEBUG})"
 
 # Global configuration instance
 config = Config()
@@ -179,9 +180,7 @@ def is_development() -> bool:
     return config.is_development()
 
 def get_database_url() -> str:
-    """Get database URL"""
+    """Get database URI (complete with database name)"""
     return config.MONGO_URL
 
-def get_database_name() -> str:
-    """Get database name"""
-    return config.DB_NAME
+# SUPPRIMÉ: get_database_name() - utilisation exclusive de l'URI

@@ -14,6 +14,7 @@ from database import get_db, close_db
 # Import new routes
 from routes.messages_routes import messages_router
 from routes.ai_routes import ai_router
+from routes.billing_routes import billing_router
 
 try:
     # facultatif si tu utilises un .env en local
@@ -23,12 +24,13 @@ except Exception:
     pass
 
 # Configuration pour emergent.sh
-APP_BASE_URL = os.getenv("APP_BASE_URL", "https://ecomsimply.com")  # Production frontend domain
-MONGO_URL = os.getenv("MONGO_URL")
-DB_NAME_ENV = os.getenv("DB_NAME", "ecomsimply_production")
+APP_BASE_URL = os.getenv("APP_BASE_URL", "https://ecomsimply.com")  # Production frontend domain  
+MONGO_URL = os.getenv("MONGO_URL")  # URI avec database explicite
 ADMIN_BOOTSTRAP_TOKEN = os.getenv("ADMIN_BOOTSTRAP_TOKEN")
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
 ADMIN_PASSWORD_HASH = os.getenv("ADMIN_PASSWORD_HASH")
+
+# SUPPRIMÉ: DB_NAME_ENV - utilisation exclusive de l'URI
 
 logger = logging.getLogger("ecomsimply")
 logging.basicConfig(level=logging.INFO)
@@ -43,6 +45,9 @@ app = FastAPI(
 # Include new routers
 app.include_router(messages_router)
 app.include_router(ai_router)
+app.include_router(billing_router)
+
+print("✅ Billing router registered at /api/billing")
 
 # Import Amazon SP-API routes
 try:
@@ -162,13 +167,10 @@ def get_allowed_origins():
             if origin:
                 origins.add(origin)
     
-    # Development fallbacks (seulement si APP_BASE_URL n'est pas défini)
+    # PRODUCTION SECURITY: No development fallbacks allowed
     if not APP_BASE_URL:
-        origins.update([
-            "http://localhost:3000",
-            "http://127.0.0.1:3000"
-        ])
-        logger.warning("⚠️ APP_BASE_URL not configured - using development CORS origins")
+        logger.error("🔒 PRODUCTION ERROR: APP_BASE_URL is required - no development fallbacks allowed")
+        raise Exception("APP_BASE_URL must be configured for production deployment")
     
     return list(origins)
 
@@ -190,27 +192,50 @@ app.add_middleware(
 @app.on_event("startup")
 async def on_startup():
     """
-    Minimal startup - actual DB connection happens lazily
-    Create indexes on startup
+    Startup avec logs DATABASE RÉELLE et vérifications ENV
     """
-    logger.info("FastAPI startup - MongoDB will connect lazily")
+    logger.info("🚀 FastAPI startup - ECOMSIMPLY API v1.0.0")
     
-    # Create indexes on startup (without admin creation to avoid production issues)
+    # Log configuration MongoDB
+    mongo_url = os.getenv("MONGO_URL")
+    if mongo_url:
+        from urllib.parse import urlparse
+        parsed = urlparse(mongo_url)
+        host_info = f"{parsed.hostname}:{parsed.port or 27017}"
+        logger.info(f"🔗 MongoDB Host: {host_info}")
+        
+        # Extract et log database from URI
+        try:
+            db_from_uri = parsed.path.lstrip('/').split('?')[0]
+            logger.info(f"📊 Database from URI: {db_from_uri}")
+        except:
+            logger.warning("⚠️ Could not extract database from URI")
+    else:
+        logger.error("❌ MONGO_URL not configured!")
+    
+    # Check for obsolete ENV vars
+    env_db_name = os.getenv("DB_NAME")
+    if env_db_name:
+        logger.warning(f"⚠️ DB_NAME env var detected ({env_db_name}) - Will be IGNORED, using URI database")
+    
+    # Create indexes on startup
     try:
         db_instance = await get_db()
         await db_instance["users"].create_index("email", unique=True)
-        logger.info("Database indexes created successfully")
+        
+        # CRITIQUE: Log effective database name
+        actual_db_name = db_instance.name
+        logger.info(f"✅ Database indexes created - Effective DB: {actual_db_name}")
+        
     except Exception as e:
-        logger.info("users.create_index(email) → %s", e)
+        logger.warning(f"⚠️ Index creation issue: {e}")
     
-    # Scheduler initialization avec guard ENABLE_SCHEDULER
+    # Scheduler initialization
     scheduler_enabled = _is_true(os.getenv("ENABLE_SCHEDULER", "false"))
     
     if scheduler_enabled:
         logger.info("✅ Scheduler enabled - Starting background jobs...")
         try:
-            # Ici on pourrait ajouter l'initialisation des schedulers si nécessaire
-            # Exemple: await start_background_jobs()
             logger.info("✅ Background schedulers started successfully")
         except Exception as e:
             logger.warning(f"⚠️ Scheduler initialization failed: {e}")
@@ -224,8 +249,8 @@ async def on_shutdown():
 @app.get("/api/health")
 async def health():
     """
-    Endpoint de santé optimisé pour emergent.sh déploiement
-    Retourne rapidement le statut sans dépendance DB critiques
+    Endpoint de santé avec DATABASE RÉELLE (pas ENV)
+    Retourne la DB effectivement utilisée par MongoDB client
     """
     try:
         start_time = datetime.utcnow()
@@ -236,41 +261,50 @@ async def health():
             "service": "ecomsimply-api",
             "timestamp": start_time.isoformat(),
             "version": "1.0.0",
-            "environment": os.getenv("NODE_ENV", "development")
+            "environment": os.getenv("NODE_ENV", "production")
         }
         
-        # Test MongoDB NON-BLOQUANT avec timeout court
+        # Test MongoDB NON-BLOQUANT avec database RÉELLE
         mongo_status = "not_configured"
-        if MONGO_URL:
+        actual_database = "unknown"
+        
+        if os.getenv("MONGO_URL"):
             try:
-                # Test rapide avec timeout très court pour ne pas bloquer le healthcheck
+                # Test rapide avec timeout très court
                 db_instance = await asyncio.wait_for(get_db(), timeout=2.0)
                 await asyncio.wait_for(db_instance.command("ping"), timeout=2.0)
+                
+                # CRITIQUE: Retourner la DB réellement utilisée
+                actual_database = db_instance.name
                 mongo_status = "ok"
-                response_data["database"] = str(db_instance.name)
+                
+                logger.info(f"✅ Health check - Database effective: {actual_database}")
+                
             except asyncio.TimeoutError:
                 mongo_status = "timeout"
+                actual_database = "timeout"
             except Exception as mongo_error:
-                # Log l'erreur mais ne fait pas échouer le health check
                 logger.warning(f"MongoDB check failed (non-critical): {str(mongo_error)}")
                 mongo_status = f"error:{type(mongo_error).__name__}"
+                actual_database = "error"
         
         response_data["mongo"] = mongo_status
+        response_data["database"] = actual_database  # DB RÉELLE, pas ENV
         
         # Temps de réponse
         response_time = (datetime.utcnow() - start_time).total_seconds() * 1000
         response_data["response_time_ms"] = round(response_time, 2)
         
-        # Retourne toujours 200 OK sauf exception critique
         return response_data
         
     except Exception as e:
-        # Log l'erreur mais retourne un status dégradé plutôt qu'une erreur 500
+        # Log l'erreur mais retourne un status dégradé
         logger.error(f"Health check error (degraded): {str(e)}")
         return {
             "status": "degraded",
             "service": "ecomsimply-api",
             "error": str(e),
+            "database": "error",
             "timestamp": datetime.utcnow().isoformat()
         }
 
@@ -479,7 +513,7 @@ async def login(login_data: LoginRequest):
 @app.post("/api/auth/register")
 async def register(register_data: RegisterRequest):
     """
-    Inscription nouvel utilisateur avec logs DEBUG structurés
+    Inscription nouvel utilisateur avec plan Premium par défaut
     """
     try:
         logger.info(f"Registration attempt for email: {register_data.email}")
@@ -499,13 +533,22 @@ async def register(register_data: RegisterRequest):
         # Hasher le mot de passe
         password_hash = bcrypt.hashpw(register_data.password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8') 
         
-        # Créer le nouvel utilisateur
+        # Créer le nouvel utilisateur avec plan Premium par défaut et essai 3 jours
         user_doc = {
             "name": register_data.name.strip(),
             "email": register_data.email.strip(),
             "passwordHash": password_hash,
+            "password_hash": password_hash,
             "is_admin": False,
             "isActive": True,
+            "subscription_plan": "premium",  # Plan unique Premium
+            "subscription_status": "trialing",  # Commence en période d'essai 
+            "has_used_trial": False,  # Peut bénéficier de l'essai 3 jours
+            "trial_start_date": None,  # Sera défini lors du checkout
+            "trial_end_date": None,   # Sera défini lors du checkout
+            "generate_images": True,
+            "include_images_manual": True,
+            "monthly_sheets_limit": float('inf'),  # Premium illimité
             "created_at": datetime.utcnow(),
         }
         
@@ -532,9 +575,11 @@ async def register(register_data: RegisterRequest):
                         "id": str(result.inserted_id),
                         "email": user_doc["email"],
                         "name": user_doc["name"],
-                        "is_admin": False
+                        "is_admin": False,
+                        "subscription_plan": "premium",
+                        "subscription_status": "trialing"
                     },
-                    "message": "Compte créé avec succès"
+                    "message": "Compte créé avec succès - Plan Premium avec essai 3 jours disponible"
                 }
             else:
                 logger.error(f"Failed to insert user document for: {register_data.email}")
@@ -554,7 +599,6 @@ async def register(register_data: RegisterRequest):
 # AUTH ENDPOINTS
 # ==========================================
 
-@app.get("/api/auth/me")
 async def get_current_user(request: Request):
     """
     Retourne les informations de l'utilisateur connecté via JWT
@@ -588,21 +632,32 @@ async def get_current_user(request: Request):
         if not user:
             raise HTTPException(status_code=401, detail="Utilisateur non trouvé")
         
-        return {
-            "ok": True,
-            "user": {
-                "id": str(user["_id"]),
-                "email": user["email"],
-                "name": user.get("name", ""),
-                "is_admin": user.get("is_admin", False)
-            }
-        }
+        return user
         
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Error getting current user: {str(e)}")
         raise HTTPException(status_code=500, detail="Erreur serveur")
+
+@app.get("/api/auth/me")
+async def get_current_user_info(request: Request):
+    """
+    Retourne les informations de l'utilisateur connecté
+    """
+    user = await get_current_user(request)
+    
+    return {
+        "ok": True,
+        "user": {
+            "id": str(user["_id"]),
+            "email": user["email"],
+            "name": user.get("name", ""),
+            "is_admin": user.get("is_admin", False),
+            "subscription_plan": user.get("subscription_plan", "premium"),
+            "subscription_status": user.get("subscription_status", "trialing")
+        }
+    }
 
 # ==========================================
 # PUBLIC ENDPOINTS 
@@ -611,90 +666,60 @@ async def get_current_user(request: Request):
 @app.get("/api/public/plans-pricing")
 async def get_plans_pricing():
     """
-    Retourne les plans et tarifs publics depuis MongoDB
+    Retourne le plan Premium unique avec essai 3 jours
     """
     try:
-        db_instance = await get_db()
-        
-        # Récupérer les plans depuis MongoDB
-        plans_cursor = db_instance["subscription_plans"].find(
-            {"active": True},
-            {"_id": 0}  # Exclure l'_id MongoDB
-        ).sort("price", 1)  # Trier par prix croissant
-        
-        plans = await plans_cursor.to_list(length=None)
-        
-        if not plans:
-            # Fallback si aucun plan en base
-            plans = [
-                {
-                    "plan_id": "starter",
-                    "name": "Starter",
-                    "price": 29.0,
-                    "currency": "EUR",
-                    "period": "month",
-                    "features": [
-                        "Jusqu'à 50 produits/mois",
-                        "Génération IA des fiches produits",
-                        "Optimisation SEO de base",
-                        "Support email"
-                    ]
-                }
+        # Plan unique Premium avec essai 3 jours
+        premium_plan = {
+            "plan_name": "premium",  # Utiliser plan_name pour cohérence avec le test
+            "plan_id": "premium",
+            "name": "Premium",
+            "price": 99.0,
+            "currency": "EUR",
+            "period": "month",
+            "trial_days": 3,
+            "stripe_price_id": "price_1RrxgjGK8qzu5V5WvOSb4uPd",  # Rendre visible le Price ID
+            "features": [
+                "Fiches produits illimitées",
+                "IA Premium + Automation complète",
+                "Publication multi-plateformes",
+                "Analytics avancées + exports",
+                "Support prioritaire 24/7",
+                "API accès complet",
+                "Intégrations personnalisées"
             ]
+        }
         
         return {
             "ok": True,
-            "plans": plans
+            "plans": [premium_plan],
+            "trial_text_fr": "3 jours d'essai gratuit",
+            "trial_text_en": "3-day free trial",
+            "cta_text_fr": "Commencer essai 3 jours",
+            "cta_text_en": "Start 3-day trial"
         }
         
     except Exception as e:
-        logger.error(f"Error fetching plans from MongoDB: {str(e)}")
-        # Fallback to static data in case of error
+        logger.error(f"Error fetching plans: {str(e)}")
         return {
             "ok": True,
-            "plans": [
-                {
-                    "plan_id": "starter",
-                    "name": "Starter",
-                    "price": 29.0,
-                    "currency": "EUR",
-                    "period": "month",
-                    "features": [
-                        "Jusqu'à 50 produits/mois",
-                        "Génération IA des fiches produits",
-                        "Optimisation SEO de base",
-                        "Support email"
-                    ]
-                },
-                {
-                    "plan_id": "pro", 
-                    "name": "Pro",
-                    "price": 79.0,
-                    "currency": "EUR",
-                    "period": "month",
-                    "features": [
-                        "Jusqu'à 200 produits/mois",
-                        "Génération IA avancée",
-                        "Optimisation SEO Premium",
-                        "A/B Testing",
-                        "Support prioritaire"
-                    ]
-                },
-                {
-                    "plan_id": "enterprise",
-                    "name": "Enterprise", 
-                    "price": 199.0,
-                    "currency": "EUR",
-                    "period": "month",
-                    "features": [
-                        "Produits illimités",
-                        "IA personnalisée",
-                        "Intégrations sur mesure",
-                        "Manager dédié",
-                        "SLA 99.9%"
-                    ]
-                }
-            ]
+            "plans": [{
+                "plan_id": "premium",
+                "name": "Premium",
+                "price": 99.0,
+                "currency": "EUR",
+                "period": "month",
+                "trial_days": 3,
+                "features": [
+                    "Fiches produits illimitées",
+                    "IA Premium + Automation complète",
+                    "Publication multi-plateformes",
+                    "Analytics avancées + exports",
+                    "Support prioritaire 24/7",
+                    "API accès complet",
+                    "Intégrations personnalisées"
+                ]
+            }]
         }
 
 @app.get("/api/testimonials")

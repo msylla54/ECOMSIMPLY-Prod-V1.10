@@ -72,8 +72,8 @@ class EmailService:
     def send_trial_welcome_email(self, user_email: str, user_name: str, plan_type: str, trial_end_date: datetime) -> bool:
         """Send welcome email for trial users"""
         
-        plan_name = "Pro" if plan_type == "pro" else "Premium"
-        price = "29€" if plan_type == "pro" else "99€"
+        plan_name = "Premium"
+        price = "99€"
         
         subject = f"🎉 Bienvenue dans votre essai gratuit {plan_name} - ECOMSIMPLY"
         
@@ -99,7 +99,7 @@ class EmailService:
             <div class="content">
                 <h2>Bonjour {user_name},</h2>
                 
-                <p>Félicitations ! Votre essai gratuit de 7 jours pour le plan <strong>{plan_name}</strong> a commencé avec succès.</p>
+                <p>Félicitations ! Votre essai gratuit de 3 jours pour le plan <strong>{plan_name}</strong> a commencé avec succès.</p>
                 
                 <div class="trial-info">
                     <h3>📋 Détails de votre essai :</h3>
@@ -114,7 +114,7 @@ class EmailService:
                 <h3>✨ Que pouvez-vous faire pendant votre essai ?</h3>
                 <ul>
                     <li>🖼️ Générer des images haute qualité avec l'IA</li>
-                    <li>📊 Accéder à tous les outils {"Pro" if plan_type == "pro" else "Premium"}</li>
+                    <li>📊 Accéder à tous les outils Premium avancés</li>
                     <li>💼 Créer des fiches produits professionnelles</li>
                     <li>📈 Utiliser les analytics avancés</li>
                     <li>🔧 Bénéficier du support prioritaire</li>
@@ -122,7 +122,7 @@ class EmailService:
                 
                 <div class="warning">
                     <h3>⚠️ Important à retenir :</h3>
-                    <p>Après les 7 jours d'essai gratuit, votre abonnement sera automatiquement renouvelé au prix de <strong>{price}/mois</strong>.</p>
+                    <p>Après les 3 jours d'essai gratuit, votre abonnement sera automatiquement renouvelé au prix de <strong>{price}/mois</strong>.</p>
                     <p>Vous pouvez annuler à tout moment depuis votre tableau de bord pour éviter tout prélèvement.</p>
                 </div>
                 
@@ -151,8 +151,8 @@ class EmailService:
     def send_trial_reminder_email(self, user_email: str, user_name: str, plan_type: str, days_remaining: int, trial_end_date: datetime) -> bool:
         """Send reminder email for trial users"""
         
-        plan_name = "Pro" if plan_type == "pro" else "Premium"
-        price = "29€" if plan_type == "pro" else "99€"
+        plan_name = "Premium"
+        price = "99€"
         
         if days_remaining == 3:
             subject = f"⏰ Plus que 3 jours d'essai gratuit {plan_name} - ECOMSIMPLY"
@@ -230,8 +230,8 @@ class EmailService:
     def send_trial_expired_email(self, user_email: str, user_name: str, plan_type: str, subscription_activated: bool) -> bool:
         """Send email when trial expires"""
         
-        plan_name = "Pro" if plan_type == "pro" else "Premium"
-        price = "29€" if plan_type == "pro" else "99€"
+        plan_name = "Premium"
+        price = "99€"
         
         if subscription_activated:
             subject = f"✅ Votre abonnement {plan_name} est maintenant actif - ECOMSIMPLY"
@@ -315,10 +315,10 @@ class EmailService:
                 <div class="content">
                     <h2>Bonjour {user_name},</h2>
                     
-                    <p>Votre essai gratuit {plan_name} de 7 jours s'est terminé. Nous espérons que vous avez apprécié découvrir toutes nos fonctionnalités ! 💙</p>
+                    <p>Votre essai gratuit {plan_name} de 3 jours s'est terminé. Nous espérons que vous avez apprécié découvrir toutes nos fonctionnalités ! 💙</p>
                     
                     <div class="info">
-                        <p>Votre compte est maintenant revenu au <strong>plan Gratuit</strong>. Vous pouvez toujours utiliser ECOMSIMPLY avec les fonctionnalités de base.</p>
+                        <p>Votre compte continue avec l'accès Premium complet. Vous pouvez utiliser toutes les fonctionnalités premium d'ECOMSIMPLY.</p>
                     </div>
                     
                     <h3>🎯 Envie de continuer l'aventure {plan_name} ?</h3>

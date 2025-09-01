@@ -129,7 +129,7 @@ const SubscriptionCancel = () => {
                 <span className="text-yellow-600 text-sm">🎁</span>
               </div>
               <div>
-                <div className="font-medium text-gray-900">Essai gratuit 7 jours</div>
+                <div className="font-medium text-gray-900">Essai gratuit 3 jours</div>
                 <div className="text-sm text-gray-600">Testez toutes les fonctionnalités sans engagement</div>
               </div>
             </div>

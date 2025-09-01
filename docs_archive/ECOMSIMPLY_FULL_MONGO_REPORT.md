@@ -256,8 +256,8 @@ backend/
 ### Variables d'Environnement
 ```bash
 # Database
-MONGO_URL=mongodb://localhost:27017/ecomsimply_dev
-DB_NAME=ecomsimply_dev
+MONGO_URL=mongodb://localhost:27017/ecomsimply_production
+DB_NAME=ecomsimply_production
 
 # Frontend  
 REACT_APP_BACKEND_URL=https://ecomsimply-deploy.preview.emergentagent.com

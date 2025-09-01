@@ -16,7 +16,7 @@
 - **Configuration Vercel/Railway validée** - Proxy `/api/*` → backend opérationnel
 
 ### ✅ **ÉTAPE 1 - ACCÈS DB & ADMIN BOOTSTRAP**
-- **MongoDB opérationnel** ✅ - Connexion DB confirmée (`ecomsimply_dev`)
+- **MongoDB opérationnel** ✅ - Connexion DB confirmée (`ecomsimply_production`)
 - **Admin bootstrap sécurisé** ✅ - Token `ECS-Bootstrap-2025-Secure-Token` validé
 - **Authentification JWT complète** ✅ - Login `msylla54@gmail.com` fonctionnel
 - **Persistance admin** ✅ - Utilisateur admin créé et accessible

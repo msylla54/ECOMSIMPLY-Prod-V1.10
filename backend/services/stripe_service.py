@@ -37,10 +37,17 @@ STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")
 # 🔐 ALLOWLIST SÉCURISÉE DES PRIX (SERVER-SIDE SOURCE OF TRUTH)
 # ================================================================================
 
-STRIPE_PRICE_ALLOWLIST = {
-    "pro_monthly": "price_1Rrw3UGK8qzu5V5Wu8PnvKzK",
-    "premium_monthly": "price_1RrxgjGK8qzu5V5WvOSb4uPd"
-}
+# Configuration Stripe centralisée - ENV-FIRST
+from ..core.config import settings
+
+def get_stripe_price_allowlist() -> Dict[str, str]:
+    """Get Stripe Price allowlist from ENV"""
+    return {
+        "premium_monthly": settings.STRIPE_PRICE_PREMIUM or "STRIPE_PRICE_PREMIUM_NOT_SET"
+    }
+
+# Dynamic allowlist based on ENV
+STRIPE_PRICE_ALLOWLIST = get_stripe_price_allowlist()
 
 def validate_price_id(price_id: str, plan_type: PlanType) -> bool:
     """Valide qu'un price_id est autorisé pour un plan donné"""

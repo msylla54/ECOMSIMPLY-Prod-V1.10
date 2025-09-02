@@ -1,5 +1,5 @@
 # ================================================================================
-# ECOMSIMPLY - MODÈLES SIMPLIFIÉS OFFRE UNIQUE PREMIUM - VERSION PRODUCTION
+# ECOMSIMPLY - MODÈLES SIMPLIFIÉS OFFRE UNIQUE PREMIUM - ENV-FIRST
 # ================================================================================
 
 from pydantic import BaseModel, Field
@@ -7,6 +7,7 @@ from typing import Optional, Dict, Any, List
 from datetime import datetime, timedelta
 from enum import Enum
 import uuid
+from ..core.config import settings
 
 class SubscriptionStatus(str, Enum):
     """États possibles de l'abonnement"""
@@ -169,10 +170,10 @@ class SubscriptionRecord(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     user_id: str
     
-    # 💳 STRIPE DATA
+    # 💳 STRIPE DATA - ENV-FIRST
     stripe_subscription_id: str
     stripe_customer_id: str
-    stripe_price_id: str = "price_1RrxgjGK8qzu5V5WvOSb4uPd"  # Premium uniquement
+    stripe_price_id: Optional[str] = None  # ✅ Sera lu depuis ENV
     
     # 📋 PLAN INFO
     plan_type: PlanType = PlanType.PREMIUM
@@ -227,13 +228,13 @@ class PaymentHistory(BaseModel):
     metadata: Dict[str, Any] = Field(default_factory=dict)
 
 # ================================================================================
-# MODÈLES DE REQUÊTE API SIMPLIFIÉS
+# MODÈLES DE REQUÊTE API SIMPLIFIÉS - ENV-FIRST
 # ================================================================================
 
 class CreateSubscriptionRequest(BaseModel):
     """Demande de création d'abonnement Premium"""
     plan_type: PlanType = PlanType.PREMIUM
-    price_id: str = "price_1RrxgjGK8qzu5V5WvOSb4uPd"
+    price_id: Optional[str] = None  # ✅ Sera lu depuis ENV
     success_url: str
     cancel_url: str
     with_trial: bool = True  # Toujours avec essai 3 jours
@@ -299,29 +300,37 @@ class IncompleteSubscriptionInfo(BaseModel):
     can_retry: bool = True
 
 # ================================================================================
-# CONFIGURATION STRIPE PREMIUM UNIQUEMENT
+# CONFIGURATION STRIPE PREMIUM UNIQUEMENT - ENV-FIRST
 # ================================================================================
 
-STRIPE_PRICE_IDS = {
-    "premium_monthly": "price_1RrxgjGK8qzu5V5WvOSb4uPd"
-}
-
-PLAN_CONFIG = {
-    PlanType.PREMIUM: {
-        "name": "Premium",
-        "price": 99.0,
-        "currency": "eur",
-        "stripe_price_id": "price_1RrxgjGK8qzu5V5WvOSb4uPd", 
-        "trial_days": 3,
-        "features": [
-            "Fiches produits illimitées",
-            "IA Premium + Automation complète", 
-            "Publication multi-plateformes",
-            "Analytics avancées + exports",
-            "Support prioritaire 24/7",
-            "API accès complet",
-            "Intégrations personnalisées"
-        ],
-        "sheets_limit": float('inf')
+def get_stripe_price_ids() -> Dict[str, str]:
+    """Get Stripe Price IDs from ENV"""
+    return {
+        "premium_monthly": settings.STRIPE_PRICE_PREMIUM or "STRIPE_PRICE_PREMIUM_NOT_SET"
     }
-}
+
+def get_plan_config() -> Dict[PlanType, Dict[str, Any]]:
+    """Get plan configuration with ENV-first approach"""
+    return {
+        PlanType.PREMIUM: {
+            "name": "Premium",
+            "price": 99.0,
+            "currency": "eur",
+            "stripe_price_id": settings.STRIPE_PRICE_PREMIUM or "STRIPE_PRICE_PREMIUM_NOT_SET",
+            "trial_days": 3,
+            "features": [
+                "Fiches produits illimitées",
+                "IA Premium + Automation complète", 
+                "Publication multi-plateformes",
+                "Analytics avancées + exports",
+                "Support prioritaire 24/7",
+                "API accès complet",
+                "Intégrations personnalisées"
+            ],
+            "sheets_limit": float('inf')
+        }
+    }
+
+# Backward compatibility - but these now read from ENV
+STRIPE_PRICE_IDS = get_stripe_price_ids()
+PLAN_CONFIG = get_plan_config()

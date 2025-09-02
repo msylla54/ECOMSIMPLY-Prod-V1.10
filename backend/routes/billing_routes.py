@@ -1,5 +1,5 @@
 # ================================================================================
-# ECOMSIMPLY - ROUTES BILLING SIMPLIFIÉES - OFFRE UNIQUE PREMIUM AVEC ESSAI 3 JOURS
+# ECOMSIMPLY - ROUTES BILLING AVEC CONFIG CENTRALISÉE ENV-FIRST
 # ================================================================================
 
 from fastapi import APIRouter, Depends, HTTPException, Request
@@ -7,76 +7,62 @@ from typing import Dict, Any
 from datetime import datetime
 import os
 import logging
-import sys
-import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from ..models.subscription import PlanType
+from ..services.stripe_service import stripe_service
+from ..core.config import settings, require_stripe
 
-from models.subscription import PlanType
-from services.stripe_service import stripe_service
-
-# Database import
-try:
-    from database import get_db
-except ImportError:
-    # Fallback for different import structure
-    async def get_db():
-        from motor.motor_asyncio import AsyncIOMotorClient
-        mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017/ecomsimply_production')
-        client = AsyncIOMotorClient(mongo_url)
-        db_name = mongo_url.split('/')[-1] if '/' in mongo_url else 'ecomsimply_production'
-        return client[db_name]
+from database import get_db
 
 logger = logging.getLogger(__name__)
 
 billing_router = APIRouter(prefix="/api/billing", tags=["billing"])
 
-# Configuration unique Premium
-STRIPE_PRICE_PREMIUM = os.getenv("STRIPE_PRICE_PREMIUM", "price_1RrxgjGK8qzu5V5WvOSb4uPd")
-BILLING_SUCCESS_URL = os.getenv("BILLING_SUCCESS_URL", "https://app.ecomsimply.com/billing/success?session_id={CHECKOUT_SESSION_ID}")
-BILLING_CANCEL_URL = os.getenv("BILLING_CANCEL_URL", "https://app.ecomsimply.com/billing/cancel")
+# Import temporaire pour get_current_user
+import jwt
+from datetime import timedelta
 
-# Import authentication function
+JWT_SECRET = settings.JWT_SECRET
+JWT_ALGORITHM = "HS256"
+
 async def get_current_user(request: Request):
     """
-    Retourne les informations de l'utilisateur connecté via JWT
+    Fonction get_current_user pour l'authentification JWT
     """
-    import jwt
-    from motor.motor_asyncio import AsyncIOMotorClient
-    
     try:
-        # Récupérer le token depuis l'en-tête Authorization
+        # Extract Bearer token from Authorization header
         auth_header = request.headers.get("Authorization")
         if not auth_header or not auth_header.startswith("Bearer "):
-            raise HTTPException(status_code=401, detail="Token d'authentification manquant")
+            raise HTTPException(status_code=401, detail="Token d'autorisation manquant")
         
         token = auth_header.split(" ")[1]
         
-        # Décoder le token JWT
-        JWT_SECRET = os.getenv("JWT_SECRET", "dev_jwt_secret_key_for_local_development")
-        payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
-        
-        user_id = payload.get("user_id")
-        if not user_id:
+        # Decode JWT token
+        try:
+            payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+            user_id = payload.get("user_id")
+            email = payload.get("email")
+            
+            if not user_id or not email:
+                raise HTTPException(status_code=401, detail="Token invalide")
+                
+        except jwt.ExpiredSignatureError:
+            raise HTTPException(status_code=401, detail="Token expiré")
+        except jwt.InvalidTokenError:
             raise HTTPException(status_code=401, detail="Token invalide")
         
-        # Récupérer l'utilisateur depuis la base de données
-        mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017/ecomsimply_production')
-        client = AsyncIOMotorClient(mongo_url)
-        db_name = mongo_url.split('/')[-1] if '/' in mongo_url else 'ecomsimply_production'
-        db = client[db_name]
+        # Get user from database
+        db = await get_db()
+        user = await db["users"].find_one({"email": email})
         
-        user = await db.users.find_one({"id": user_id})
         if not user:
             raise HTTPException(status_code=401, detail="Utilisateur non trouvé")
         
         return user
         
-    except jwt.ExpiredSignatureError:
-        raise HTTPException(status_code=401, detail="Token expiré")
-    except jwt.InvalidTokenError:
-        raise HTTPException(status_code=401, detail="Token invalide")
+    except HTTPException:
+        raise
     except Exception as e:
-        logger.error(f"Erreur authentification: {str(e)}")
+        logger.error(f"Error getting current user: {str(e)}")
         raise HTTPException(status_code=500, detail="Erreur serveur")
 
 @billing_router.post("/checkout", response_model=Dict[str, Any])
@@ -86,11 +72,14 @@ async def create_checkout_session(
 ):
     """
     Crée une session Stripe Checkout pour l'offre unique Premium avec essai 3 jours
-    MODE PRODUCTION - Essai géré directement dans le Price Stripe
+    MODE PRODUCTION - Configuration entièrement via ENV
     """
     try:
         # Authentification utilisateur
         current_user = await get_current_user(request)
+        
+        # Require Stripe configuration from ENV
+        stripe_config = require_stripe()
         
         logger.info(f"🛒 Creating checkout session for user: {current_user.get('email', 'unknown')}")
         
@@ -114,7 +103,7 @@ async def create_checkout_session(
         customer_id = current_user.get('stripe_customer_id')
         if not customer_id:
             import stripe
-            stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
+            stripe.api_key = stripe_config["secret_key"]
             
             customer = stripe.Customer.create(
                 email=current_user.get('email'),
@@ -137,18 +126,18 @@ async def create_checkout_session(
         # Configuration session Checkout pour Premium avec essai 3 jours
         # IMPORTANT : Le trial_period_days=3 est configuré au niveau du Price dans Stripe Dashboard
         import stripe
-        stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
+        stripe.api_key = stripe_config["secret_key"]
         
         session = stripe.checkout.Session.create(
             customer=customer_id,
             payment_method_types=["card"],
             line_items=[{
-                "price": STRIPE_PRICE_PREMIUM,
+                "price": stripe_config["price_premium"],  # ✅ ENV-FIRST
                 "quantity": 1,
             }],
             mode="subscription",
-            success_url=BILLING_SUCCESS_URL,
-            cancel_url=BILLING_CANCEL_URL,
+            success_url=stripe_config["success_url"] or f"{settings.APP_BASE_URL}/billing/success?session_id={{CHECKOUT_SESSION_ID}}",
+            cancel_url=stripe_config["cancel_url"] or f"{settings.APP_BASE_URL}/billing/cancel",
             metadata={
                 "user_id": current_user.get('id'),
                 "plan_type": "premium",
@@ -221,16 +210,19 @@ async def get_billing_config():
     """
     Retourne la configuration billing pour le frontend
     """
+    stripe_config = settings.get_stripe_config()
+    
     return {
         "success": True,
-        "stripe_price_id": STRIPE_PRICE_PREMIUM,  # Inclure le Price ID Stripe
+        "stripe_enabled": stripe_config["enabled"],
+        "stripe_price_id": stripe_config["price_premium"] if stripe_config["enabled"] else None,
         "plan": {
             "name": "Premium",
             "plan_id": "premium",
             "price": 99,
             "currency": "EUR",
             "trial_days": 3,
-            "stripe_price_id": STRIPE_PRICE_PREMIUM,
+            "stripe_price_id": stripe_config["price_premium"] if stripe_config["enabled"] else None,
             "features": [
                 "Fiches produits illimitées",
                 "IA Premium + Automation complète",

@@ -1,12 +1,15 @@
 import os
 import logging
 import asyncio
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pymongo.errors import DuplicateKeyError, ServerSelectionTimeoutError
+
+# Import configuration centralisée
+from core.config import settings, get_cors_origins
 
 # Import database connection
 from database import get_db, close_db
@@ -23,23 +26,14 @@ try:
 except Exception:
     pass
 
-# Configuration pour emergent.sh
-APP_BASE_URL = os.getenv("APP_BASE_URL", "https://ecomsimply.com")  # Production frontend domain  
-MONGO_URL = os.getenv("MONGO_URL")  # URI avec database explicite
-ADMIN_BOOTSTRAP_TOKEN = os.getenv("ADMIN_BOOTSTRAP_TOKEN")
-ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
-ADMIN_PASSWORD_HASH = os.getenv("ADMIN_PASSWORD_HASH")
-
-# SUPPRIMÉ: DB_NAME_ENV - utilisation exclusive de l'URI
-
 logger = logging.getLogger("ecomsimply")
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=getattr(logging, settings.LOG_LEVEL))
 
 # Initialize FastAPI app
 app = FastAPI(
-    title="ECOMSIMPLY API",
-    description="API pour la plateforme ECOMSIMPLY - Génération automatique de fiches produits",
-    version="1.0.0"
+    title=settings.APP_NAME,
+    description=settings.APP_DESCRIPTION,
+    version=settings.APP_VERSION
 )
 
 # Include new routers
@@ -140,42 +134,8 @@ if AMAZON_MONITORING_AVAILABLE:
     app.include_router(amazon_monitoring_router)
     print("✅ Amazon Monitoring routes registered")
 
-# Configuration CORS sécurisée pour emergent.sh
-def get_allowed_origins():
-    """
-    Configuration dynamique des origines autorisées pour emergent.sh
-    """
-    origins = set()
-    
-    # Origine principale (frontend Vercel ou emergent.sh)
-    if APP_BASE_URL:
-        origins.add(APP_BASE_URL)
-    
-    # Ajouter automatiquement le domaine emergent.sh pour production
-    app_name = os.getenv("APP_NAME", "ecom-api-fixes")
-    emergent_domain = f"https://{app_name}.emergent.host"
-    origins.add(emergent_domain)
-    
-    # Domaine de production principal
-    origins.add("https://ecomsimply.com")
-    
-    # Origines supplémentaires via variable d'environnement
-    additional_origins = os.getenv("ADDITIONAL_ALLOWED_ORIGINS", "")
-    if additional_origins:
-        for origin in additional_origins.split(","):
-            origin = origin.strip()
-            if origin:
-                origins.add(origin)
-    
-    # PRODUCTION SECURITY: No development fallbacks allowed
-    if not APP_BASE_URL:
-        logger.error("🔒 PRODUCTION ERROR: APP_BASE_URL is required - no development fallbacks allowed")
-        raise Exception("APP_BASE_URL must be configured for production deployment")
-    
-    return list(origins)
-
-# CORS
-allowed_origins = get_allowed_origins()
+# Configuration CORS sécurisée via configuration centralisée
+allowed_origins = get_cors_origins()
 logger.info(f"✅ CORS configured for origins: {allowed_origins}")
 
 app.add_middleware(
@@ -669,7 +629,7 @@ async def get_plans_pricing():
     Retourne le plan Premium unique avec essai 3 jours
     """
     try:
-        # Plan unique Premium avec essai 3 jours
+        # Plan unique Premium avec essai 3 jours - ENV-FIRST
         premium_plan = {
             "plan_name": "premium",  # Utiliser plan_name pour cohérence avec le test
             "plan_id": "premium",
@@ -678,7 +638,7 @@ async def get_plans_pricing():
             "currency": "EUR",
             "period": "month",
             "trial_days": 3,
-            "stripe_price_id": "price_1RrxgjGK8qzu5V5WvOSb4uPd",  # Rendre visible le Price ID
+            "stripe_price_id": settings.STRIPE_PRICE_PREMIUM or "STRIPE_PRICE_PREMIUM_NOT_SET",  # ✅ ENV-FIRST
             "features": [
                 "Fiches produits illimitées",
                 "IA Premium + Automation complète",

@@ -268,6 +268,12 @@ async def health():
             "timestamp": datetime.utcnow().isoformat()
         }
 
+# Healthcheck ingress simple pour emergent.sh
+@app.get("/healthz")
+async def healthz():
+    """Simple health check for ingress"""
+    return {"status": "ok"}
+
 # Emergency endpoints removed for production security
 
 @app.post("/api/admin/bootstrap")
@@ -943,3 +949,22 @@ async def get_affiliate_config():
                 "Support marketing dédié"
             ]
         }
+
+# ==========================================
+# ROUTES PUBLIQUES ALIAS & LEGACY SUPPORT
+# ==========================================
+
+@app.get("/api/public/affiliate-config")
+async def get_public_affiliate_config():
+    """Alias for affiliate config - route publique"""
+    return await get_affiliate_config()
+
+@app.get("/api/public/plans-pricing-nocache")
+async def get_plans_pricing_nocache():
+    """Alias legacy - redirect to main plans endpoint"""
+    return await get_plans_pricing()
+
+@app.get("/api/plans-pricing-alt")
+async def get_plans_pricing_alt():
+    """Alias legacy - redirect to main plans endpoint"""
+    return await get_plans_pricing()

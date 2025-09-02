@@ -2522,18 +2522,10 @@ const LandingPage = ({
   const loadDynamicPricing = async () => {
     setLoadingPricing(true);
     
-    // Liste des endpoints à essayer en cas d'erreur 404
-    const endpoints = [
-      `${API}/public/plans-pricing`,
-      `${API}/public/plans-pricing-nocache`,
-      `${API}/plans-pricing-alt`
-    ];
-    
-    for (let i = 0; i < endpoints.length; i++) {
-      try {
-        console.log(`🔄 Tentative ${i + 1}/${endpoints.length}: ${endpoints[i]}`);
-        
-        const response = await axios.get(endpoints[i], {
+    // Endpoint unifié pour les plans pricing
+    try {
+      console.log(`🔄 Récupération plans: ${API}/public/plans-pricing`);
+      const response = await axios.get(`${API}/public/plans-pricing`, {
           // Headers pour éviter le cache
           headers: {
             'Cache-Control': 'no-cache',
@@ -2566,20 +2558,15 @@ const LandingPage = ({
           });
           
           setDynamicPricing(newPricing);
-          console.log(`✅ Dynamic pricing loaded from ${endpoints[i]}:`, newPricing);
+          console.log(`✅ Dynamic pricing loaded:`, newPricing);
           setLoadingPricing(false);
-          return; // Succès, on sort de la boucle
+          return;
         }
       } catch (error) {
-        console.error(`❌ Erreur endpoint ${i + 1}/${endpoints.length} (${endpoints[i]}):`, error.response?.status, error.message);
-        
-        // Si c'est le dernier endpoint et qu'il échoue aussi, on continue avec les valeurs par défaut
-        if (i === endpoints.length - 1) {
-          console.log('⚠️  Tous les endpoints ont échoué, utilisation des prix par défaut');
-          // Les valeurs par défaut sont déjà définies dans l'état initial
-        }
+        console.error(`❌ Erreur lors du chargement des prix:`, error.response?.status, error.message);
+        console.log('⚠️  Utilisation des prix par défaut');
+        // Les valeurs par défaut sont déjà définies dans l'état initial
       }
-    }
     
     setLoadingPricing(false);
   };
